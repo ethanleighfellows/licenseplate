@@ -25,7 +25,7 @@ function getCookie(name) {
 function checkPassword() {
     const passwordInput = document.getElementById('password-input');
     const errorMessage = document.getElementById('password-error');
-    const correctPassword = 'yourPasswordHere'; // Replace with actual password
+    const correctPassword = 'password'; // Replace with actual password
 
     if (passwordInput.value === correctPassword) {
         setCookie("accessGranted", "true", 7); // Cookie lasts for 7 days
