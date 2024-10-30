@@ -3,7 +3,7 @@ const baseId = 'appyrizLAyOlYArpI.'; // Replace with your Airtable Base ID
 const tableName = 'License Tracker'; // Replace with your table name
 
 const trackerContainer = document.getElementById("tracker-container");
-const searchInput = document.getElementById("search-input");
+const searchInput = document.getElementById("search-input"); //test
 
 const statesByCountry = {
   '🇺🇸 United States 🇺🇸': [
