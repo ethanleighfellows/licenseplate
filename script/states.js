@@ -1,6 +1,6 @@
-const apiKey = 'YOUR_AIRTABLE_API_KEY'; // Replace with your Airtable API key
-const baseId = 'YOUR_BASE_ID'; // Replace with your Airtable Base ID
-const tableName = 'States'; // Replace with your table name
+const apiKey = 'patkHvP79DLxdSXdS.f5426d3dede7ffc9f385aca56989548f5dea2946ae1ddf8813e3a43b857a81d1'; // Replace with your Airtable API key
+const baseId = 'appyrizLAyOlYArpI.'; // Replace with your Airtable Base ID
+const tableName = 'License Tracker'; // Replace with your table name
 
 const trackerContainer = document.getElementById("tracker-container");
 const searchInput = document.getElementById("search-input");
