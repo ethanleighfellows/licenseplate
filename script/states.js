@@ -1,9 +1,9 @@
-const apiKey = 'patkHvP79DLxdSXdS.f5426d3dede7ffc9f385aca56989548f5dea2946ae1ddf8813e3a43b857a81d1'; // Replace with your Airtable API key
-const baseId = 'appyrizLAyOlYArpI.'; // Replace with your Airtable Base ID
-const tableName = 'License Tracker'; // Replace with your table name
+const apiKey = 'patkHvP79DLxdSXdS.f5426d3dede7ffc9f385aca56989548f5dea2946ae1ddf8813e3a43b857a81d1'; // Airtable API key
+const baseId = 'appyrizLAyOlYArpI'; // Airtable Base ID (without a trailing dot)
+const tableName = 'License Tracker'; // Airtable table name
 
 const trackerContainer = document.getElementById("tracker-container");
-const searchInput = document.getElementById("search-input"); //test
+const searchInput = document.getElementById("search-input");
 
 const statesByCountry = {
   '🇺🇸 United States 🇺🇸': [
@@ -124,8 +124,8 @@ function getImageForState(stateName) {
 // Function to fetch data from Airtable and display states
 async function fetchData() {
     try {
-        const response = await fetch(`https://api.airtable.com/v0/${appyrizLAyOlYArpI.}/${License Tracker}`,
-            headers: { Authorization: `Bearer ${patkHvP79DLxdSXdS.f5426d3dede7ffc9f385aca56989548f5dea2946ae1ddf8813e3a43b857a81d1}` }
+        const response = await fetch(`https://api.airtable.com/v0/${baseId}/${tableName}`, {
+            headers: { Authorization: `Bearer ${apiKey}` }
         });
         const data = await response.json();
         displayStates(data.records); // Pass records to displayStates function
@@ -181,7 +181,7 @@ async function updateCount(recordId, newCount) {
         const response = await fetch(`https://api.airtable.com/v0/${baseId}/${tableName}/${recordId}`, {
             method: 'PATCH',
             headers: {
-                Authorization: `Bearer ${apiKey}`,
+                Authorization: `Bearer ${patkHvP79DLxdSXdS.f5426d3dede7ffc9f385aca56989548f5dea2946ae1ddf8813e3a43b857a81d1}`,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
