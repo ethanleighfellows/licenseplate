@@ -40,7 +40,7 @@ app.post('/update-count', async (req, res) => {
 
         // Update the count for the specified region
         if (data.hasOwnProperty(state)) {
-            data[state] += value;
+            data[state] += value; // Increment or decrement
             await writeData(data); // Write updated data to the JSON file
             res.json({ newCount: data[state] });
         } else {
@@ -52,7 +52,7 @@ app.post('/update-count', async (req, res) => {
     }
 });
 
-// Endpoint to retrieve all counts
+// Endpoint to retrieve all counts (for initial load or refresh)
 app.get('/get-counts', async (req, res) => {
     try {
         const data = await readData();
