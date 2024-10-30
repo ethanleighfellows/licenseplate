@@ -1,5 +1,5 @@
 const apiKey = 'patkHvP79DLxdSXdS.f5426d3dede7ffc9f385aca56989548f5dea2946ae1ddf8813e3a43b857a81d1'; // Airtable API key
-const baseId = 'appyrizLAyOlYArpI'; // Airtable Base ID (without a trailing dot)
+const baseId = 'appyrizLAyOlYArpI.';
 const tableName = 'License Tracker'; // Airtable table name
 
 const trackerContainer = document.getElementById("tracker-container");
