@@ -235,6 +235,13 @@ async function updateCount(recordId, adjustment) {
 // Search functionality
 searchInput.addEventListener('input', (event) => {
     const searchText = event.target.value.toLowerCase();
+    
+    // If search box is empty, fetch and display all states
+    if (searchText === "") {
+        fetchData(); // Re-fetch and display all data
+        return;
+    }
+
     const filteredRecords = [];
 
     // Filter states based on search input
@@ -252,6 +259,7 @@ searchInput.addEventListener('input', (event) => {
 
     displayStates(filteredRecords);
 });
+
 
 // Initial data fetch
 fetchData();
