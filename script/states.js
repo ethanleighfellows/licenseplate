@@ -121,11 +121,11 @@ function getImageForState(stateName) {
     return ""; // Return empty string if no image is found
 }
 
-// Function to fetch data from Airtable and display states
+// Fetch data from Airtable and display states
 async function fetchData() {
     try {
-        const response = await fetch(`https://api.airtable.com/v0/${baseId}/${tableName}`, {
-            headers: { Authorization: `Bearer ${apiKey}` }
+        const response = await fetch(`https://api.airtable.com/v0/${appyrizLAyOlYArpI}/${License Tracker}`, {
+            headers: { Authorization: `Bearer ${patkHvP79DLxdSXdS.f5426d3dede7ffc9f385aca56989548f5dea2946ae1ddf8813e3a43b857a81d1}` }
         });
         const data = await response.json();
         displayStates(data.records); // Pass records to displayStates function
@@ -134,69 +134,118 @@ async function fetchData() {
     }
 }
 
-// Function to display states using fetched data
+// Display states grouped by country and sorted alphabetically
 function displayStates(records) {
     trackerContainer.innerHTML = ""; // Clear previous content
+
+    // Prepare data to display grouped by country
+    const groupedData = {};
 
     records.forEach(record => {
         const state = record.fields.Region;
         const count = record.fields.Count;
-        const imagePath = getImageForState(state); // Get image path from statesByCountry
+        const imagePath = getImageForState(state);
 
-        const trackerDiv = document.createElement("div");
-        trackerDiv.className = "tracker";
-
-        const stateImage = document.createElement("img");
-        stateImage.src = imagePath; // Use the image path based on the state name
-        stateImage.alt = `${state} license plate`;
-
-        const stateLabel = document.createElement("span");
-        stateLabel.textContent = state;
-
-        const countLabel = document.createElement("span");
-        countLabel.className = "counter";
-        countLabel.id = `count-${record.id}`;
-        countLabel.textContent = count;
-
-        const decrementButton = document.createElement("button");
-        decrementButton.textContent = "-";
-        decrementButton.onclick = () => updateCount(record.id, count - 1); // Decrease count
-
-        const incrementButton = document.createElement("button");
-        incrementButton.textContent = "+";
-        incrementButton.onclick = () => updateCount(record.id, count + 1); // Increase count
-
-        trackerDiv.appendChild(stateImage);
-        trackerDiv.appendChild(stateLabel);
-        trackerDiv.appendChild(decrementButton);
-        trackerDiv.appendChild(countLabel);
-        trackerDiv.appendChild(incrementButton);
-        trackerContainer.appendChild(trackerDiv);
+        // Find the country for the state and group accordingly
+        for (const country in statesByCountry) {
+            if (statesByCountry[country].some(s => s.name === state)) {
+                if (!groupedData[country]) groupedData[country] = [];
+                groupedData[country].push({ state, count, imagePath, recordId: record.id });
+                break;
+            }
+        }
     });
-}
 
-// Function to update the count in Airtable
-async function updateCount(recordId, newCount) {
-    try {
-        const response = await fetch(`https://api.airtable.com/v0/${baseId}/${tableName}/${recordId}`, {
-            method: 'PATCH',
-            headers: {
-                Authorization: `Bearer ${patkHvP79DLxdSXdS.f5426d3dede7ffc9f385aca56989548f5dea2946ae1ddf8813e3a43b857a81d1}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                fields: { Count: newCount }
-            })
-        });
-        const data = await response.json();
-        document.getElementById(`count-${recordId}`).textContent = data.fields.Count; // Update displayed count
-    } catch (error) {
-        console.error("Error updating count in Airtable:", error);
+    // Display each country with states sorted alphabetically
+    for (const country in groupedData) {
+        const countryHeader = document.createElement("h2");
+        countryHeader.className = "country-header";
+        countryHeader.textContent = country;
+        trackerContainer.appendChild(countryHeader);
+
+        groupedData[country]
+            .sort((a, b) => a.state.localeCompare(b.state)) // Sort alphabetically
+            .forEach(({ state, count, imagePath, recordId }) => {
+                const trackerDiv = document.createElement("div");
+                trackerDiv.className = "tracker";
+
+                const stateImage = document.createElement("img");
+                stateImage.src = imagePath || "assets/default.png";
+                stateImage.alt = `${state} license plate`;
+
+                const stateLabel = document.createElement("span");
+                stateLabel.textContent = state;
+
+                const countLabel = document.createElement("span");
+                countLabel.className = "counter";
+                countLabel.id = `count-${recordId}`;
+                countLabel.textContent = count;
+
+                const decrementButton = document.createElement("button");
+                decrementButton.textContent = "-";
+                decrementButton.onclick = () => updateCount(recordId, count - 1);
+
+                const incrementButton = document.createElement("button");
+                incrementButton.textContent = "+";
+                incrementButton.onclick = () => updateCount(recordId, count + 1);
+
+                trackerDiv.appendChild(stateImage);
+                trackerDiv.appendChild(stateLabel);
+                trackerDiv.appendChild(decrementButton);
+                trackerDiv.appendChild(countLabel);
+                trackerDiv.appendChild(incrementButton);
+                trackerContainer.appendChild(trackerDiv);
+            });
     }
 }
 
+// Function to update the count in Airtable
+async function fetchData() {
+    try {
+        const response = await fetch(`https://api.airtable.com/v0/${appyrizLAyOlYArpI}/${License Tracker}`, {
+            headers: { Authorization: `Bearer ${patkHvP79DLxdSXdS.f5426d3dede7ffc9f385aca56989548f5dea2946ae1ddf8813e3a43b857a81d1}` }
+        });
+        const data = await response.json();
+        
+        // Populate the stateToRecordIdMap with state names and their record IDs
+        data.records.forEach(record => {
+            const state = record.fields.Region;
+            const recordId = record.id;
+            stateToRecordIdMap[state] = recordId; // Map state name to Record ID
+        });
+
+        // Display the states with the fetched data
+        displayStates(data.records);
+    } catch (error) {
+        console.error("Error fetching data from Airtable:", error);
+    }
+}
+
+// Search functionality
+searchInput.addEventListener('input', (event) => {
+    const searchText = event.target.value.toLowerCase();
+    const filteredRecords = [];
+
+    // Filter states based on search input
+    Object.values(statesByCountry).forEach(states => {
+        states.forEach(state => {
+            if (state.name.toLowerCase().includes(searchText)) {
+                filteredRecords.push(state.name);
+            }
+        });
+    });
+
+    fetchData().then(() => {
+        displayStates(
+            filteredRecords.map(stateName => ({
+                fields: {
+                    Region: stateName,
+                    Count: document.getElementById(`count-${stateName}`).textContent || 0
+                }
+            }))
+        );
+    });
+});
+
 // Initial data fetch
 fetchData();
-
-// Display all states initially
-displayStates(statesByCountry);
