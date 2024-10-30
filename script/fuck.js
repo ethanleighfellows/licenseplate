@@ -1,4 +1,9 @@
 document.addEventListener("DOMContentLoaded", () => {
+    // Airtable setup
+    const accessToken = 'YOUR_PERSONAL_ACCESS_TOKEN'; // Replace with your Airtable PAT
+    const baseId = 'YOUR_BASE_ID'; // Replace with your Airtable Base ID
+    const tableName = 'States'; // Replace with your table name
+
     // Check if elements exist
     const trackerContainer = document.getElementById("tracker-container");
     const searchInput = document.getElementById("search-input");
@@ -54,23 +59,72 @@ document.addEventListener("DOMContentLoaded", () => {
         // Display all states initially
         displayStates(statesByCountry);
 
-        // Function to update count
-        function updateCount(state, value) {
-            fetch(`/update-count`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ state, value })
-            })
-            .then(response => {
-                if (!response.ok) throw new Error("Network response was not ok");
-                return response.json();
-            })
-            .then(data => {
-                const countLabel = document.getElementById(`count-${state}`);
-                if (countLabel) countLabel.textContent = data.newCount;
-            })
-            .catch(error => console.error("Error updating count:", error));
+        // Function to update count in Airtable
+        async function updateCount(state, value) {
+            try {
+                // Fetch the record ID based on the state name
+                const record = await getRecordByState(state);
+                if (!record) {
+                    console.error("No matching record found for:", state);
+                    return;
+                }
+
+                // Patch request to update the count
+                const updatedCount = record.fields.Count + value;
+                const response = await fetch(`https://api.airtable.com/v0/${baseId}/${tableName}/${record.id}`, {
+                    method: "PATCH",
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        fields: { Count: updatedCount }
+                    })
+                });
+                if (!response.ok) throw new Error("Failed to update count");
+
+                const data = await response.json();
+                document.getElementById(`count-${state}`).textContent = data.fields.Count; // Update displayed count
+            } catch (error) {
+                console.error("Error updating count in Airtable:", error);
+            }
         }
+
+        // Function to search Airtable for a record by state name
+        async function getRecordByState(state) {
+            try {
+                const response = await fetch(`https://api.airtable.com/v0/${baseId}/${tableName}?filterByFormula={Region}="${state}"`, {
+                    headers: { Authorization: `Bearer ${accessToken}` }
+                });
+                const data = await response.json();
+                return data.records[0]; // Return the first matching record
+            } catch (error) {
+                console.error("Error retrieving record from Airtable:", error);
+                return null;
+            }
+        }
+
+        // Function to load initial counts from Airtable
+        async function loadCounts() {
+            try {
+                const response = await fetch(`https://api.airtable.com/v0/${baseId}/${tableName}`, {
+                    headers: { Authorization: `Bearer ${accessToken}` }
+                });
+                const data = await response.json();
+                
+                // Map Airtable records to their count elements in the DOM
+                data.records.forEach(record => {
+                    const countLabel = document.getElementById(`count-${record.fields.Region}`);
+                    if (countLabel) {
+                        countLabel.textContent = record.fields.Count;
+                    }
+                });
+            } catch (error) {
+                console.error("Error loading counts from Airtable:", error);
+            }
+        }
+
+        loadCounts(); // Load counts when the page loads
 
         // Search functionality to filter states
         searchInput.addEventListener('input', (event) => {
@@ -89,23 +143,6 @@ document.addEventListener("DOMContentLoaded", () => {
             displayStates(filteredStatesByCountry); // Update displayed list based on search
         });
 
-        // Function to load initial counts
-        function loadCounts() {
-            fetch(`/get-counts`)
-            .then(response => {
-                if (!response.ok) throw new Error("Network response was not ok");
-                return response.json();
-            })
-            .then(data => {
-                Object.keys(data).forEach(state => {
-                    const countLabel = document.getElementById(`count-${state}`);
-                    if (countLabel) countLabel.textContent = data[state];
-                });
-            })
-            .catch(error => console.error("Error loading counts:", error));
-        }
-
-        loadCounts(); // Load counts when the page loads
     } else {
         console.error("Missing required elements or data.");
     }
