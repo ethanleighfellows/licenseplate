@@ -124,7 +124,7 @@ function getImageForState(stateName) {
 // Function to fetch data from Airtable and display states
 async function fetchData() {
     try {
-        const response = await fetch(`https://api.airtable.com/v0/${appyrizLAyOlYArpI.}/${License Tracker}`, {
+        const response = await fetch(`https://api.airtable.com/v0/${appyrizLAyOlYArpI.}/${License Tracker}`,
             headers: { Authorization: `Bearer ${patkHvP79DLxdSXdS.f5426d3dede7ffc9f385aca56989548f5dea2946ae1ddf8813e3a43b857a81d1}` }
         });
         const data = await response.json();
