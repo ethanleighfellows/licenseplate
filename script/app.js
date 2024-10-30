@@ -1,11 +1,9 @@
-// app.js
-
 // Set a cookie with the specified name, value, and expiration days
 function setCookie(name, value, days) {
     const d = new Date();
     d.setTime(d.getTime() + (days * 24 * 60 * 60 * 1000));
     const expires = "expires=" + d.toUTCString();
-    document.cookie = name + "=" + value + ";" + expires + ";path=/";
+    document.cookie = `${name}=${value};${expires};path=/`;
 }
 
 // Get the value of a cookie by name
@@ -27,11 +25,11 @@ function checkPassword() {
     const errorMessage = document.getElementById('password-error');
     const correctPassword = 'password'; // Replace with actual password
 
-    if (passwordInput.value === correctPassword) {
+    if (passwordInput && passwordInput.value === correctPassword) {
         setCookie("accessGranted", "true", 7); // Cookie lasts for 7 days
         document.getElementById('password-overlay').style.display = 'none';
         document.body.style.overflow = 'auto'; // Enable scroll
-    } else {
+    } else if (errorMessage) {
         errorMessage.style.display = 'block';
     }
 }
@@ -39,8 +37,9 @@ function checkPassword() {
 // Check if access cookie is set
 function checkAccess() {
     const accessGranted = getCookie("accessGranted");
-    if (accessGranted === "true") {
-        document.getElementById('password-overlay').style.display = 'none';
+    const overlay = document.getElementById('password-overlay');
+    if (accessGranted === "true" && overlay) {
+        overlay.style.display = 'none';
         document.body.style.overflow = 'auto'; // Enable scroll
     }
 }
@@ -51,10 +50,14 @@ document.addEventListener("DOMContentLoaded", checkAccess);
 // Preloader
 window.addEventListener('load', function() {
     const preloader = document.getElementById('preloader');
-    preloader.style.display = 'none';
+    if (preloader) {
+        preloader.style.display = 'none';
+    }
 });
 
 // Particles.js Background
-particlesJS.load('particles-js', 'particles.json', function() {
-    console.log('Particles.js loaded');
-});
+if (document.getElementById('particles-js')) {
+    particlesJS.load('particles-js', 'particles.json', function() {
+        console.log('Particles.js loaded');
+    });
+}
