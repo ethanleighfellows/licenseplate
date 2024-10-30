@@ -8,13 +8,13 @@ body {
 }
 
 #particles-js {
-    position: absolute;
+    position: fixed; /* Fixed positioning to cover the full viewport */
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%;
-    z-index: 0; /* Places it at the very back */
-    pointer-events: none; /* Allows interaction with elements above it */
+    height: 100vh; /* Set to viewport height */
+    z-index: -1; /* Ensures particles stay behind all other content */
+    pointer-events: none;
 }
 
 /* Password Overlay */
@@ -70,9 +70,13 @@ h1 {
 }
 
 .search-container {
-    text-align: center;
+    display: flex;
+    justify-content: center;
     margin: 20px;
+    z-index: 1; /* Ensure it appears above particles */
+    position: relative;
 }
+
 
 .search-input {
     padding: 10px;
@@ -85,9 +89,15 @@ h1 {
 }
 
 .tracker-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center content horizontally */
+    margin: 0 auto;
+    width: 90%;
+    max-width: 600px; /* Restrict max width for better readability */
+    z-index: 1; /* Place above particles */
     position: relative;
-    z-index: 1; /* Places it above particles */
-    padding-top: 20px;
+    padding-bottom: 20px; /* Add bottom padding to prevent clipping */
 }
 
 .country-header {
