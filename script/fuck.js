@@ -1,8 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
     // Airtable setup
-    const accessToken = 'YOUR_PERSONAL_ACCESS_TOKEN'; // Replace with your Airtable PAT
-    const baseId = 'YOUR_BASE_ID'; // Replace with your Airtable Base ID
-    const tableName = 'States'; // Replace with your table name
+    const accessToken = 'patkHvP79DLxdSXdS.f5426d3dede7ffc9f385aca56989548f5dea2946ae1ddf8813e3a43b857a81d1'; // Replace with your Airtable PAT
+    const baseId = 'appyrizLAyOlYArpI.'; // Replace with your Airtable Base ID
+    const tableName = 'License Tracker'; // Replace with your table name
 
     // Check if elements exist
     const trackerContainer = document.getElementById("tracker-container");
