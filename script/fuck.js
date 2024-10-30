@@ -1,8 +1,7 @@
-const trackerContainer = document.getElementById("tracker-container");
-const searchInput = document.getElementById("search-input");
-
 // Ensure statesByCountry is defined and not empty
-if (typeof statesByCountry !== "undefined" && trackerContainer && searchInput) {
+if (typeof statesByCountry !== "undefined") {
+    const trackerContainer = document.getElementById("tracker-container");
+    const searchInput = document.getElementById("search-input");
 
     // Function to generate tracker cards dynamically
     function displayStates(stateList) {
