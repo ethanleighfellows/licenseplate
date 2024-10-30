@@ -5,7 +5,6 @@ const tableName = 'License Tracker';
 const trackerContainer = document.getElementById("tracker-container");
 const searchInput = document.getElementById("search-input");
 
-// Define `statesByCountry` before any Airtable fetch
 const statesByCountry = {
   '🇺🇸 United States 🇺🇸': [
     { name: "Alabama", image: "assets/plates/alabama.png" },
@@ -109,13 +108,11 @@ const statesByCountry = {
     { name: "Yukon", image: "assets/plates/yukon.png" }
 ]
 };
-
 // Map to store state names to their corresponding Airtable Record IDs
 const stateToRecordIdMap = {};
 
 // Helper function to get image path based on state name
 function getImageForState(stateName) {
-    if (!statesByCountry) return ""; // Check if statesByCountry is defined
     for (const country in statesByCountry) {
         const stateObj = statesByCountry[country].find(state => state.name === stateName);
         if (stateObj) {
@@ -212,7 +209,11 @@ function displayStates(records) {
 }
 
 // Function to update the count in Airtable using Record ID
-async function updateCount(recordId, newCount) {
+async function updateCount(recordId, adjustment) {
+    // Get the current count from the displayed label
+    const currentCount = parseInt(document.getElementById(`count-${recordId}`).textContent);
+    const newCount = currentCount + adjustment; // Adjust based on button clicked
+
     try {
         const response = await fetch(`https://api.airtable.com/v0/${baseId}/${tableName}/${recordId}`, {
             method: 'PATCH',
@@ -230,6 +231,27 @@ async function updateCount(recordId, newCount) {
         console.error("Error updating count in Airtable:", error);
     }
 }
+
+// Search functionality
+searchInput.addEventListener('input', (event) => {
+    const searchText = event.target.value.toLowerCase();
+    const filteredRecords = [];
+
+    // Filter states based on search input
+    Object.keys(stateToRecordIdMap).forEach(stateName => {
+        if (stateName.toLowerCase().includes(searchText)) {
+            filteredRecords.push({
+                fields: {
+                    Region: stateName,
+                    Count: document.getElementById(`count-${stateToRecordIdMap[stateName]}`).textContent || 0
+                },
+                id: stateToRecordIdMap[stateName]
+            });
+        }
+    });
+
+    displayStates(filteredRecords);
+});
 
 // Initial data fetch
 fetchData();
