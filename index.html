@@ -8,9 +8,6 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-
-    <!-- Particles.js Library -->
-    <script src="script/particles.js"></script>
 </head>
 <body>
 
@@ -27,13 +24,22 @@
     <div class="tracker-container" id="tracker-container">
         <!-- Dynamically generated list of countries, states/provinces -->
     </div>
-    
+
     <!-- Load External JavaScript -->
+    <script src="script/particles.js"></script>
     <script src="script/states.js"></script>
     <script src="script/app.js"></script>
-    <script src="script/particles.js"></script>
     <script src="script/backend.js"></script>
     <script src="script/fuck.js"></script>
+
+    <!-- Ensure DOMContentLoaded Before Script Execution -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Ensure all scripts, including fuck.js, are loaded and executed here.
+            // Your initialization code can go here if necessary, for example:
+            initSearch(); // Ensure this function is defined in `fuck.js`
+        });
+    </script>
 
 </body>
 </html>
