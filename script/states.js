@@ -107,9 +107,26 @@ const statesByCountry = {
 const trackerContainer = document.getElementById("tracker-container");
 const searchInput = document.getElementById("search-input");
 
+// Function to call backend update API
+function updateCount(state, value) {
+    fetch('/update-count', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ state, value })
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Update displayed count
+        document.getElementById(`count-${state}`).textContent = data.newCount;
+    })
+    .catch(error => console.error("Error updating count:", error));
+}
+
 // Function to generate tracker cards dynamically
 function displayStates(stateList) {
-    trackerContainer.innerHTML = "";  // Clear previous content
+    trackerContainer.innerHTML = ""; // Clear previous content
 
     for (const country in stateList) {
         const countryHeader = document.createElement("h2");
@@ -130,7 +147,7 @@ function displayStates(stateList) {
 
             const decrementButton = document.createElement("button");
             decrementButton.textContent = "-";
-            decrementButton.onclick = () => updateCount(state.name, -1);
+            decrementButton.onclick = () => updateCount(state.name, -1); // Decrease count
 
             const countLabel = document.createElement("span");
             countLabel.className = "counter";
@@ -139,7 +156,7 @@ function displayStates(stateList) {
 
             const incrementButton = document.createElement("button");
             incrementButton.textContent = "+";
-            incrementButton.onclick = () => updateCount(state.name, 1);
+            incrementButton.onclick = () => updateCount(state.name, 1); // Increase count
 
             trackerDiv.appendChild(stateImage);
             trackerDiv.appendChild(stateLabel);
