@@ -7,6 +7,15 @@ body {
     /* overflow: hidden;  Remove this line to allow scrolling */
 }
 
+#particles-js {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0; /* Places it at the very back */
+    pointer-events: none; /* Allows interaction with elements above it */
+}
 
 /* Password Overlay */
 #password-overlay {
@@ -76,10 +85,9 @@ h1 {
 }
 
 .tracker-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 10px;
+    position: relative;
+    z-index: 1; /* Places it above particles */
+    padding-top: 20px;
 }
 
 .country-header {
@@ -140,6 +148,8 @@ h1 {
     width: 30px;
     text-align: center;
 }
+
+
 
 /* Responsive adjustments */
 @media (max-width: 600px) {
