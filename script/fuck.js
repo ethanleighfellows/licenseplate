@@ -33,14 +33,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 countLabel.id = `count-${record.id}`;
                 countLabel.textContent = count;
 
-                // Directly setting the adjustment to +1 or -1 for increment and decrement buttons
-const decrementButton = document.createElement("button");
+  const decrementButton = document.createElement("button");
 decrementButton.textContent = "-";
-decrementButton.onclick = () => updateCount(recordId, -1); // Explicitly passing -1
+decrementButton.onclick = () => updateCount(recordId, 'decrement'); // Hard-coded decrement
 
 const incrementButton = document.createElement("button");
 incrementButton.textContent = "+";
-incrementButton.onclick = () => updateCount(recordId, +1); // Explicitly passing +1
+incrementButton.onclick = () => updateCount(recordId, 'increment'); // Hard-coded increment
 
                 trackerDiv.appendChild(stateImage);
                 trackerDiv.appendChild(stateLabel);
