@@ -125,8 +125,8 @@ function getImageForState(stateName) {
 // Consolidated function to fetch data from Airtable and display states
 async function fetchData() {
     try {
-        const response = await fetch(https://api.airtable.com/v0/${baseId}/${tableName}, {
-            headers: { Authorization: Bearer ${apiKey} }
+        const response = await fetch(`https://api.airtable.com/v0/${baseId}/${tableName}`, {
+            headers: { Authorization: `Bearer ${apiKey}` }
         });
         const data = await response.json();
         
@@ -180,14 +180,14 @@ function displayStates(records) {
 
                 const stateImage = document.createElement("img");
                 stateImage.src = imagePath || "assets/default.png";
-                stateImage.alt = ${state} license plate;
+                stateImage.alt = `${state} license plate`;
 
                 const stateLabel = document.createElement("span");
                 stateLabel.textContent = state;
 
                 const countLabel = document.createElement("span");
                 countLabel.className = "counter";
-                countLabel.id = count-${recordId};
+                countLabel.id = `count-${recordId}`;
                 countLabel.textContent = count;
 
                 const decrementButton = document.createElement("button");
@@ -211,14 +211,14 @@ function displayStates(records) {
 // Function to update the count in Airtable using Record ID
 async function updateCount(recordId, adjustment) {
     // Get the current count from the displayed label
-    const currentCount = parseInt(document.getElementById(count-${recordId}).textContent);
+    const currentCount = parseInt(document.getElementById(`count-${recordId}`).textContent);
     const newCount = currentCount + adjustment; // Adjust based on button clicked
 
     try {
-        const response = await fetch(https://api.airtable.com/v0/${baseId}/${tableName}/${recordId}, {
+        const response = await fetch(`https://api.airtable.com/v0/${baseId}/${tableName}/${recordId}`, {
             method: 'PATCH',
             headers: {
-                Authorization: Bearer ${apiKey},
+                Authorization: `Bearer ${apiKey}`,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({ fields: { Count: newCount } })
@@ -226,7 +226,7 @@ async function updateCount(recordId, adjustment) {
         const data = await response.json();
         
         // Update the displayed count
-        document.getElementById(count-${recordId}).textContent = data.fields.Count;
+        document.getElementById(`count-${recordId}`).textContent = data.fields.Count;
     } catch (error) {
         console.error("Error updating count in Airtable:", error);
     }
@@ -250,7 +250,7 @@ searchInput.addEventListener('input', (event) => {
             filteredRecords.push({
                 fields: {
                     Region: stateName,
-                    Count: document.getElementById(count-${stateToRecordIdMap[stateName]}).textContent || 0
+                    Count: document.getElementById(`count-${stateToRecordIdMap[stateName]}`).textContent || 0
                 },
                 id: stateToRecordIdMap[stateName]
             });
