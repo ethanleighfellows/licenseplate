@@ -210,33 +210,22 @@ function displayStates(records) {
 
 async function updateCount(recordId, adjustment) {
     // Get the current count from the displayed label
-    const currentCount = parseInt(document.getElementById(`count-${recordId}`).textContent);
-    
-    // Adjust the count based on the action ('increment' or 'decrement')
-    const newCount = adjustment === 'increment' ? currentCount + 1 : currentCount - 1;
+    const currentCount = parseInt(document.getElementById(count-${recordId}).textContent);
+    const newCount = currentCount + 1; // Adjust based on button clicked
 
     try {
-        // Update the count in Airtable
-        const response = await fetch(`https://api.airtable.com/v0/${baseId}/${tableName}/${recordId}`, {
+        const response = await fetch(https://api.airtable.com/v0/${baseId}/${tableName}/${recordId}, {
             method: 'PATCH',
             headers: {
-                Authorization: `Bearer ${apiKey}`,
+                Authorization: Bearer ${apiKey},
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({ fields: { Count: newCount } })
         });
-        
         const data = await response.json();
         
         // Update the displayed count
-        document.getElementById(`count-${recordId}`).textContent = data.fields.Count;
-        
-        // Show pop-up confirmation based on the adjustment
-        if (adjustment === 'increment') {
-            showPopup("Point added!");
-        } else if (adjustment === 'decrement') {
-            showPopup("Point removed!");
-        }
+        document.getElementById(count-${recordId}).textContent = data.fields.Count;
     } catch (error) {
         console.error("Error updating count in Airtable:", error);
     }
