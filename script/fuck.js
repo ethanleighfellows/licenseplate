@@ -10,45 +10,46 @@ document.addEventListener("DOMContentLoaded", () => {
     if (typeof statesByCountry !== "undefined" && trackerContainer && searchInput) {
 
         function displayStates(records) {
-            trackerContainer.innerHTML = "";
-            records.forEach(record => {
-                const state = record.fields.Region;
-                const count = record.fields.Count;
-                const imagePath = getImageForState(state);
+    trackerContainer.innerHTML = ""; // Clear previous content
 
-                console.log("Displaying state:", state, "with count:", count, "and image:", imagePath);
+    records.forEach(record => {
+        const state = record.fields.Region;
+        const count = record.fields.Count;
+        const recordId = record.id;
+        const imagePath = getImageForState(state);
 
-                const trackerDiv = document.createElement("div");
-                trackerDiv.className = "tracker";
+        const trackerDiv = document.createElement("div");
+        trackerDiv.className = "tracker";
 
-                const stateImage = document.createElement("img");
-                stateImage.src = imagePath || "assets/default.png"; // Fallback image
-                stateImage.alt = ${state} license plate;
+        const stateImage = document.createElement("img");
+        stateImage.src = imagePath || "assets/default.png";
+        stateImage.alt = `${state} license plate`;
 
-                const stateLabel = document.createElement("span");
-                stateLabel.textContent = state;
+        const stateLabel = document.createElement("span");
+        stateLabel.textContent = state;
 
-                const countLabel = document.createElement("span");
-                countLabel.className = "counter";
-                countLabel.id = count-${record.id};
-                countLabel.textContent = count;
+        const countLabel = document.createElement("span");
+        countLabel.className = "counter";
+        countLabel.id = `count-${recordId}`;
+        countLabel.textContent = count;
 
-  const decrementButton = document.createElement("button");
-decrementButton.textContent = "-";
-decrementButton.onclick = () => updateCount(recordId, 'decrement'); // Hard-coded decrement
+        const decrementButton = document.createElement("button");
+        decrementButton.textContent = "-";
+        decrementButton.onclick = () => updateCount(recordId, 'decrement');
 
-const incrementButton = document.createElement("button");
-incrementButton.textContent = "+";
-incrementButton.onclick = () => updateCount(recordId, 'increment'); // Hard-coded increment
+        const incrementButton = document.createElement("button");
+        incrementButton.textContent = "+";
+        incrementButton.onclick = () => updateCount(recordId, 'increment');
 
-                trackerDiv.appendChild(stateImage);
-                trackerDiv.appendChild(stateLabel);
-                trackerDiv.appendChild(decrementButton);
-                trackerDiv.appendChild(countLabel);
-                trackerDiv.appendChild(incrementButton);
-                trackerContainer.appendChild(trackerDiv);
-            });
-        }
+        trackerDiv.appendChild(stateImage);
+        trackerDiv.appendChild(stateLabel);
+        trackerDiv.appendChild(decrementButton);
+        trackerDiv.appendChild(countLabel);
+        trackerDiv.appendChild(incrementButton);
+        trackerContainer.appendChild(trackerDiv);
+    });
+}
+}
 
         async function fetchData() {
             try {
