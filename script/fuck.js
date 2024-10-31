@@ -63,22 +63,6 @@ incrementButton.onclick = () => updateCount(recordId, 'increment'); // Hard-code
             }
         }
 
-        async function updateCount(recordId, newCount) {
-            try {
-                const response = await fetch(`https://api.airtable.com/v0/${baseId}/${tableName}/${recordId}`, {
-                    method: "PATCH",
-                    headers: {
-                        Authorization: `Bearer ${accessToken}`,
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({ fields: { Count: newCount } })
-                });
-                const data = await response.json();
-                document.getElementById(`count-${recordId}`).textContent = data.fields.Count;
-            } catch (error) {
-                console.error("Error updating count in Airtable:", error);
-            }
-        }
 
         async function loadCounts() {
             try {
