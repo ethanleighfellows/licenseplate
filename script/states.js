@@ -213,16 +213,16 @@ async function updateCount(recordId, action) {
     const currentCountElement = document.getElementById(`count-${recordId}`);
     const currentCount = parseInt(currentCountElement.textContent);
 
-   // Apply adjustment based on action
+    // Apply adjustment based on action
     let adjustment;
     if (action === 'increment') {
-        adjustment = 1;} 
-    else (action === 'decrement') {
-        adjustment = -1; } 
+        adjustment = 1;
+    } else if (action === 'decrement') {
+        adjustment = -1;
+    }
 
     // Calculate the new count
     const newCount = currentCount + adjustment;
-    console.log(`Record ID: ${recordId}, Current Count: ${currentCount}, Adjustment: ${adjustment}, New Count: ${newCount}`);
     console.log(`Record ID: ${recordId}, Action: ${action}, Current Count: ${currentCount}, Adjustment Applied: ${adjustment}, New Count: ${newCount}`);
 
     try {
@@ -249,6 +249,7 @@ async function updateCount(recordId, action) {
         console.error("Error updating count in Airtable:", error);
     }
 }
+
 
 
 
