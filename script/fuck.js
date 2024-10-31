@@ -23,24 +23,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 const stateImage = document.createElement("img");
                 stateImage.src = imagePath || "assets/default.png"; // Fallback image
-                stateImage.alt = `${state} license plate`;
+                stateImage.alt = ${state} license plate;
 
                 const stateLabel = document.createElement("span");
                 stateLabel.textContent = state;
 
                 const countLabel = document.createElement("span");
                 countLabel.className = "counter";
-                countLabel.id = `count-${record.id}`;
+                countLabel.id = count-${record.id};
                 countLabel.textContent = count;
 
- const decrementButton = document.createElement("button");
+  const decrementButton = document.createElement("button");
 decrementButton.textContent = "-";
-decrementButton.onclick = () => updateCount(recordId, 'decrement'); // Pass "decrement" string explicitly
+decrementButton.onclick = () => updateCount(recordId, 'decrement'); // Hard-coded decrement
 
 const incrementButton = document.createElement("button");
 incrementButton.textContent = "+";
-incrementButton.onclick = () => updateCount(recordId, 'increment'); // Pass "increment" string explicitly
-
+incrementButton.onclick = () => updateCount(recordId, 'increment'); // Hard-coded increment
 
                 trackerDiv.appendChild(stateImage);
                 trackerDiv.appendChild(stateLabel);
@@ -53,8 +52,8 @@ incrementButton.onclick = () => updateCount(recordId, 'increment'); // Pass "inc
 
         async function fetchData() {
             try {
-                const response = await fetch(`https://api.airtable.com/v0/${baseId}/${tableName}`, {
-                    headers: { Authorization: `Bearer ${accessToken}` }
+                const response = await fetch(https://api.airtable.com/v0/${baseId}/${tableName}, {
+                    headers: { Authorization: Bearer ${accessToken} }
                 });
                 const data = await response.json();
                 console.log("Fetched data:", data); // Check the structure of fetched data
@@ -64,15 +63,31 @@ incrementButton.onclick = () => updateCount(recordId, 'increment'); // Pass "inc
             }
         }
 
+        async function updateCount(recordId, newCount) {
+            try {
+                const response = await fetch(https://api.airtable.com/v0/${baseId}/${tableName}/${recordId}, {
+                    method: "PATCH",
+                    headers: {
+                        Authorization: Bearer ${accessToken},
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ fields: { Count: newCount } })
+                });
+                const data = await response.json();
+                document.getElementById(count-${recordId}).textContent = data.fields.Count;
+            } catch (error) {
+                console.error("Error updating count in Airtable:", error);
+            }
+        }
 
         async function loadCounts() {
             try {
-                const response = await fetch(`https://api.airtable.com/v0/${baseId}/${tableName}`, {
-                    headers: { Authorization: `Bearer ${accessToken}` }
+                const response = await fetch(https://api.airtable.com/v0/${baseId}/${tableName}, {
+                    headers: { Authorization: Bearer ${accessToken} }
                 });
                 const data = await response.json();
                 data.records.forEach(record => {
-                    const countLabel = document.getElementById(`count-${record.fields.Region}`);
+                    const countLabel = document.getElementById(count-${record.fields.Region});
                     if (countLabel) {
                         countLabel.textContent = record.fields.Count;
                     }
