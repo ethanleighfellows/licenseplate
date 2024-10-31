@@ -33,14 +33,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 countLabel.id = `count-${record.id}`;
                 countLabel.textContent = count;
 
-  // Set explicit actions for each button
-const decrementButton = document.createElement("button");
+ const decrementButton = document.createElement("button");
 decrementButton.textContent = "-";
-decrementButton.onclick = () => updateCount(recordId, 'decrement'); // Pass "decrement"
+decrementButton.onclick = () => updateCount(recordId, 'decrement'); // Pass "decrement" string
 
 const incrementButton = document.createElement("button");
 incrementButton.textContent = "+";
-incrementButton.onclick = () => updateCount(recordId, 'increment'); // Pass "increment"
+incrementButton.onclick = () => updateCount(recordId, 'increment'); // Pass "increment" string
 
 
                 trackerDiv.appendChild(stateImage);
