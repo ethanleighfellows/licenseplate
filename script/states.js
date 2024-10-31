@@ -213,8 +213,8 @@ async function updateCount(recordId, action) {
     const currentCountElement = document.getElementById(`count-${recordId}`);
     const currentCount = parseInt(currentCountElement.textContent);
 
-    // Apply adjustment based on action
-    let adjustment;
+    // Set adjustment directly based on action without ternary operation
+    let adjustment = 0;
     if (action === 'increment') {
         adjustment = 1;
     } else if (action === 'decrement') {
@@ -223,7 +223,7 @@ async function updateCount(recordId, action) {
 
     // Calculate the new count
     const newCount = currentCount + adjustment;
-    console.log(`Record ID: ${recordId}, Action: ${action}, Current Count: ${currentCount}, Adjustment Applied: ${adjustment}, New Count: ${newCount}`);
+    console.log(`Record ID: ${recordId}, Action: ${action}, Current Count: ${currentCount}, Adjustment: ${adjustment}, New Count: ${newCount}`);
 
     try {
         // Send PATCH request to Airtable
@@ -238,8 +238,8 @@ async function updateCount(recordId, action) {
 
         const data = await response.json();
 
-        // Update the displayed count if Airtable successfully updated
-        if (data.fields && typeof data.fields.Count === 'number') {
+        // Check if Airtable response includes the updated count
+        if (data.fields && data.fields.Count !== undefined) {
             currentCountElement.textContent = data.fields.Count;
             console.log(`Updated count displayed: ${data.fields.Count}`);
         } else {
@@ -249,9 +249,6 @@ async function updateCount(recordId, action) {
         console.error("Error updating count in Airtable:", error);
     }
 }
-
-
-
 
 // Search functionality
 searchInput.addEventListener('input', (event) => {
