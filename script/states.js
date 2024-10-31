@@ -209,11 +209,23 @@ function displayStates(records) {
 }
 
 async function updateCount(recordId, action) {
+    // Log the action parameter to check if it's correctly passed
+    console.log(`Action received: ${action}`);
+
     // Get the current count from the displayed label
     const currentCount = parseInt(document.getElementById(`count-${recordId}`).textContent);
 
-    // Apply a hard-coded adjustment based on action type
-    const adjustment = action === 'increment' ? 1 : -1;
+    // Define adjustment based on action explicitly for debugging
+    let adjustment;
+    if (action === 'increment') {
+        adjustment = 1;
+    } else if (action === 'decrement') {
+        adjustment = -1;
+    } else {
+        console.error("Unexpected action value:", action);
+        return; // Exit if action is not recognized
+    }
+
     const newCount = currentCount + adjustment;
 
     console.log(`Record ID: ${recordId}, Current Count: ${currentCount}, Action: ${action}, Adjustment Applied: ${adjustment}, New Count: ${newCount}`);
@@ -241,6 +253,7 @@ async function updateCount(recordId, action) {
         console.error("Error updating count in Airtable:", error);
     }
 }
+
 
 
 // Search functionality
