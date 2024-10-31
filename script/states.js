@@ -209,13 +209,15 @@ function displayStates(records) {
 }
 
 // Function to update the count in Airtable using Record ID
-async function updateCount(recordId, adjustment) {
+async function updateCount(recordId, action) {
     // Get the current count from the displayed label
     const currentCount = parseInt(document.getElementById(`count-${recordId}`).textContent);
-    const newCount = currentCount + adjustment; // Adjust based on button clicked
 
-    // Log current count and new count for debugging
-    console.log(`Record ID: ${recordId}, Current Count: ${currentCount}, Adjustment: ${adjustment}, New Count: ${newCount}`);
+    // Hard-code adjustment based on action type
+    const adjustment = action === 'increment' ? 1 : -1;
+    const newCount = currentCount + adjustment;
+
+    console.log(`Record ID: ${recordId}, Current Count: ${currentCount}, Adjustment Applied: ${adjustment}, New Count: ${newCount}`);
 
     try {
         const response = await fetch(`https://api.airtable.com/v0/${baseId}/${tableName}/${recordId}`, {
@@ -229,7 +231,7 @@ async function updateCount(recordId, adjustment) {
 
         const data = await response.json();
         
-        // Confirm data returned is as expected and update display
+        // Update the displayed count
         if (data.fields && data.fields.Count !== undefined) {
             document.getElementById(`count-${recordId}`).textContent = data.fields.Count;
             console.log(`Updated count displayed: ${data.fields.Count}`);
