@@ -7,6 +7,18 @@ function setCookie(name, value, days) {
 }
 
 function showPopup(message) {
+    const popup = document.createElement('div');
+    popup.classList.add('popup');
+    popup.innerText = message;
+
+    document.body.appendChild(popup);
+
+    setTimeout(() => popup.classList.add('show'), 10); // Show pop-up
+    setTimeout(() => popup.classList.remove('show'), 2000); // Fade-out after 2s
+    setTimeout(() => popup.remove(), 3000); // Remove from DOM after animation
+}
+
+function showPopup(message) {
     // Create pop-up element
     const popup = document.createElement('div');
     popup.classList.add('popup');
