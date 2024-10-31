@@ -214,6 +214,9 @@ async function updateCount(recordId, adjustment) {
     const currentCount = parseInt(document.getElementById(`count-${recordId}`).textContent);
     const newCount = currentCount + adjustment; // Adjust based on button clicked
 
+    // Log current count and new count for debugging
+    console.log(`Record ID: ${recordId}, Current Count: ${currentCount}, Adjustment: ${adjustment}, New Count: ${newCount}`);
+
     try {
         const response = await fetch(`https://api.airtable.com/v0/${baseId}/${tableName}/${recordId}`, {
             method: 'PATCH',
@@ -223,10 +226,16 @@ async function updateCount(recordId, adjustment) {
             },
             body: JSON.stringify({ fields: { Count: newCount } })
         });
+
         const data = await response.json();
         
-        // Update the displayed count
-        document.getElementById(`count-${recordId}`).textContent = data.fields.Count;
+        // Confirm data returned is as expected and update display
+        if (data.fields && data.fields.Count !== undefined) {
+            document.getElementById(`count-${recordId}`).textContent = data.fields.Count;
+            console.log(`Updated count displayed: ${data.fields.Count}`);
+        } else {
+            console.error("Unexpected response format", data);
+        }
     } catch (error) {
         console.error("Error updating count in Airtable:", error);
     }
