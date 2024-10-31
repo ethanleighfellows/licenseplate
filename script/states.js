@@ -209,17 +209,11 @@ function displayStates(records) {
 }
 
 async function updateCount(recordId, action) {
-    // Confirm valid action by explicitly logging and only handling increment/decrement
-    if (action !== 'increment' && action !== 'decrement') {
-        console.error("Invalid action received:", action);
-        return;
-    }
-
     // Get the current count from the displayed label
     const currentCountElement = document.getElementById(`count-${recordId}`);
     const currentCount = parseInt(currentCountElement.textContent);
 
-    // Directly apply a hard-coded adjustment
+    // Set adjustment based on action without validation
     const adjustment = action === 'increment' ? 1 : -1;
     const newCount = currentCount + adjustment;
 
@@ -238,7 +232,7 @@ async function updateCount(recordId, action) {
 
         const data = await response.json();
 
-        // Confirm Airtable updated the count and update the display
+        // Update the displayed count if Airtable successfully updated
         if (data.fields && typeof data.fields.Count === 'number') {
             currentCountElement.textContent = data.fields.Count;
             console.log(`Updated count displayed: ${data.fields.Count}`);
@@ -249,6 +243,7 @@ async function updateCount(recordId, action) {
         console.error("Error updating count in Airtable:", error);
     }
 }
+
 
 
 // Search functionality
