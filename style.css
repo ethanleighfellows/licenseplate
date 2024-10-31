@@ -7,6 +7,39 @@ body {
     /* overflow: hidden;  Remove this line to allow scrolling */
 }
 
+/* Pop-up Style */
+.popup {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(74, 144, 226, 0.9);  /* Blue color with transparency */
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    z-index: 1000;
+}
+
+.popup.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(-10px);
+}
+
+/* Make popup mobile-friendly */
+@media (max-width: 600px) {
+    .popup {
+        font-size: 14px;
+        padding: 8px 16px;
+        bottom: 15px;
+    }
+}
+
+
 #particles-js {
     position: fixed; /* Fixed positioning to cover the full viewport */
     top: 0;
