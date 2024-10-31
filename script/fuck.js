@@ -35,11 +35,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
  const decrementButton = document.createElement("button");
 decrementButton.textContent = "-";
-decrementButton.onclick = () => updateCount(recordId, 'decrement'); // Pass "decrement" string
+decrementButton.onclick = () => updateCount(recordId, 'decrement'); // Pass "decrement" string explicitly
 
 const incrementButton = document.createElement("button");
 incrementButton.textContent = "+";
-incrementButton.onclick = () => updateCount(recordId, 'increment'); // Pass "increment" string
+incrementButton.onclick = () => updateCount(recordId, 'increment'); // Pass "increment" string explicitly
 
 
                 trackerDiv.appendChild(stateImage);
