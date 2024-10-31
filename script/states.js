@@ -209,27 +209,21 @@ function displayStates(records) {
 }
 
 async function updateCount(recordId, action) {
-    // Log the action parameter to ensure it’s received correctly
-    console.log(`Action received: ${action}`);
+    // Confirm valid action by explicitly logging and only handling increment/decrement
+    if (action !== 'increment' && action !== 'decrement') {
+        console.error("Invalid action received:", action);
+        return;
+    }
 
     // Get the current count from the displayed label
     const currentCountElement = document.getElementById(`count-${recordId}`);
     const currentCount = parseInt(currentCountElement.textContent);
 
-    // Apply adjustment based on action
-    let adjustment;
-    if (action === 'increment') {
-        adjustment = 1;
-    } else if (action === 'decrement') {
-        adjustment = -1;
-    } else {
-        console.error("Unexpected action value:", action);
-        return; // Exit if action is not recognized
-    }
-
-    // Calculate the new count
+    // Directly apply a hard-coded adjustment
+    const adjustment = action === 'increment' ? 1 : -1;
     const newCount = currentCount + adjustment;
-    console.log(`Record ID: ${recordId}, Current Count: ${currentCount}, Adjustment: ${adjustment}, New Count: ${newCount}`);
+
+    console.log(`Record ID: ${recordId}, Action: ${action}, Current Count: ${currentCount}, Adjustment Applied: ${adjustment}, New Count: ${newCount}`);
 
     try {
         // Send PATCH request to Airtable
@@ -243,21 +237,18 @@ async function updateCount(recordId, action) {
         });
 
         const data = await response.json();
-        
-        // Confirm if Airtable response includes the updated count
-        if (data.fields && data.fields.Count !== undefined) {
-            // Update the displayed count
+
+        // Confirm Airtable updated the count and update the display
+        if (data.fields && typeof data.fields.Count === 'number') {
             currentCountElement.textContent = data.fields.Count;
             console.log(`Updated count displayed: ${data.fields.Count}`);
         } else {
-            console.error("Unexpected response format or missing Count field", data);
+            console.error("Unexpected response or missing Count in response:", data);
         }
     } catch (error) {
         console.error("Error updating count in Airtable:", error);
     }
 }
-
-
 
 
 // Search functionality
