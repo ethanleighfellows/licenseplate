@@ -6,6 +6,29 @@ function setCookie(name, value, days) {
     document.cookie = `${name}=${value};${expires};path=/`;
 }
 
+function showPopup(message) {
+    // Create pop-up element
+    const popup = document.createElement('div');
+    popup.classList.add('popup');
+    popup.innerText = message;
+
+    // Add pop-up to the body
+    document.body.appendChild(popup);
+
+    // Animate the pop-up fade-in and fade-out
+    setTimeout(() => popup.classList.add('show'), 10);  // Delay for CSS transition
+    setTimeout(() => popup.classList.remove('show'), 2000); // Show for 2s, then fade-out
+    setTimeout(() => popup.remove(), 3000);  // Remove from DOM after animation completes
+}
+
+// Example usage: call showPopup() when a point is added
+function incrementCounter() {
+    // Assume logic to increment the counter here
+    showPopup("Point added!");  // Call pop-up with message
+}
+
+
+
 // Get the value of a cookie by name
 function getCookie(name) {
     const nameEQ = name + "=";
