@@ -212,7 +212,7 @@ function displayStates(records) {
 async function updateCount(recordId, adjustment) {
     // Get the current count from the displayed label
     const currentCount = parseInt(document.getElementById(`count-${recordId}`).textContent);
-    const newCount = currentCount + "1"; // Adjust based on button clicked
+    const newCount = currentCount + 1; // Adjust based on button clicked
 
     try {
         const response = await fetch(`https://api.airtable.com/v0/${baseId}/${tableName}/${recordId}`, {
