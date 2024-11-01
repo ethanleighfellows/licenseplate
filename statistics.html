@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statistics - License Plate Tracker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Particles Background -->
+    <div id="particles-js"></div>
+
+    <div id="statistics-container" class="tracker-container">
+        <h1>Leaderboard</h1>
+        <div id="leaderboard" class="leaderboard">
+      <!-- Leaderboard items will be dynamically inserted here -->
+  </div>
+
+
+
+        <h2>Progress Bars</h2>
+        <div class="progress-bar-container">
+      <div class="progress-bar">
+          <label>US States Seen:</label>
+          <div class="liquid-progress">
+              <div id="us-progress" class="liquid">
+                  <div class="wave wave1"></div> <!-- First wave -->
+                  <div class="wave wave2"></div> <!-- Second wave -->
+              </div>
+          </div>
+          <span id="us-progress-text" class="progress-text">0/50</span>
+      </div>
+      <div class="progress-bar">
+          <label>Canadian Provinces Seen:</label>
+          <div class="liquid-progress">
+              <div id="canada-progress" class="liquid">
+                  <div class="wave wave1"></div> <!-- First wave -->
+                  <div class="wave wave2"></div> <!-- Second wave -->
+              </div>
+          </div>
+          <span id="canada-progress-text" class="progress-text">0/13</span>
+      </div>
+      <div class="progress-bar">
+          <label>Mexican Provinces Seen:</label>
+          <div class="liquid-progress">
+              <div id="mexico-progress" class="liquid">
+                  <div class="wave wave1"></div> <!-- First wave -->
+                  <div class="wave wave2"></div> <!-- Second wave -->
+              </div>
+          </div>
+          <span id="mexico-progress-text" class="progress-text">0/32</span>
+      </div>
+  </div>
+
+
+
+
+
+
+
+
+    <script src="script/statistics.js"></script>
+</body>
+</html>
