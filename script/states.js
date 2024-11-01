@@ -52,13 +52,13 @@ const statesByCountry = {
     { name: "Texas", image: "assets/plates/texas.png" },
     { name: "Utah", image: "assets/plates/utah.png" },
     { name: "Vermont", image: "assets/plates/vermont.png" },
+     { name: "US Federal Government", image: "assets/plates/usgov.png" },
+    { name: "Diplomatic Plate", image: "assets/plates/diplo.png" },
     { name: "Virginia", image: "assets/plates/virginia.png" },
     { name: "Washington", image: "assets/plates/washington.png" },
     { name: "West Virginia", image: "assets/plates/west_virginia.png" },
     { name: "Wisconsin", image: "assets/plates/wisconsin.png" },
-    { name: "Wyoming", image: "assets/plates/wyoming.png" },
-    { name: "US Federal Government", image: "assets/plates/usgov.png" },
-    { name: "Diplomatic Plate", image: "assets/plates/diplo.png" }
+    { name: "Wyoming", image: "assets/plates/wyoming.png" }
 ],
 '🇲🇽 Mexico 🇲🇽': [
     { name: "Aguascalientes", image: "assets/plates/aguascalientes.png" },
@@ -86,14 +86,14 @@ const statesByCountry = {
     { name: "Quintana Roo", image: "assets/plates/quintana_roo.png" },
     { name: "San Luis Potosí", image: "assets/plates/san_luis_potosi.png" },
     { name: "Sinaloa", image: "assets/plates/sinaloa.png" },
+    { name: "Mexican Federal Plate", image: "assets/plates/mexfed.png" },
     { name: "Sonora", image: "assets/plates/sonora.png" },
     { name: "Tabasco", image: "assets/plates/tabasco.png" },
     { name: "Tamaulipas", image: "assets/plates/tamaulipas.png" },
     { name: "Tlaxcala", image: "assets/plates/tlaxcala.png" },
     { name: "Veracruz", image: "assets/plates/veracruz.png" },
     { name: "Yucatán", image: "assets/plates/yucatan.png" },
-    { name: "Zacatecas", image: "assets/plates/zacatecas.png" },
-    { name: "Mexican Federal Plate", image: "assets/plates/mexfed.png" }
+    { name: "Zacatecas", image: "assets/plates/zacatecas.png" }
 ],
 '🇨🇦 Canada 🇨🇦': [
     { name: "Alberta", image: "assets/plates/alberta.png" },
@@ -105,11 +105,11 @@ const statesByCountry = {
     { name: "Ontario (Outside)", image: "assets/plates/ontario.png" },
     { name: "Prince Edward Island", image: "assets/plates/prince_edward_island.png" },
     { name: "Quebec", image: "assets/plates/quebec.png" },
+    { name: "Canada Federal Government", image: "assets/plates/cangov.png" },
     { name: "Saskatchewan", image: "assets/plates/saskatchewan.png" },
     { name: "Northwest Territories", image: "assets/plates/northwest_territories.png" },
     { name: "Nunavut", image: "assets/plates/nunavut.png" },
-    { name: "Yukon", image: "assets/plates/yukon.png" },
-    { name: "Canada Federal Government", image: "assets/plates/cangov.png" }
+    { name: "Yukon", image: "assets/plates/yukon.png" }
 ]
 };
 // Map to store state names to their corresponding Airtable Record IDs
