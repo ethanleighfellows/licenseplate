@@ -56,7 +56,9 @@ const statesByCountry = {
     { name: "Washington", image: "assets/plates/washington.png" },
     { name: "West Virginia", image: "assets/plates/west_virginia.png" },
     { name: "Wisconsin", image: "assets/plates/wisconsin.png" },
-    { name: "Wyoming", image: "assets/plates/wyoming.png" }
+    { name: "Wyoming", image: "assets/plates/wyoming.png" },
+    { name: "US Federal Government", image: "assets/plates/usgov.png" },
+    { name: "Diplomatic Plate", image: "assets/plates/diplo.png" }
 ],
 '🇲🇽 Mexico 🇲🇽': [
     { name: "Aguascalientes", image: "assets/plates/aguascalientes.png" },
@@ -90,7 +92,8 @@ const statesByCountry = {
     { name: "Tlaxcala", image: "assets/plates/tlaxcala.png" },
     { name: "Veracruz", image: "assets/plates/veracruz.png" },
     { name: "Yucatán", image: "assets/plates/yucatan.png" },
-    { name: "Zacatecas", image: "assets/plates/zacatecas.png" }
+    { name: "Zacatecas", image: "assets/plates/zacatecas.png" },
+    { name: "Mexican Federal Plate", image: "assets/plates/mexfed.png" }
 ],
 '🇨🇦 Canada 🇨🇦': [
     { name: "Alberta", image: "assets/plates/alberta.png" },
@@ -105,7 +108,8 @@ const statesByCountry = {
     { name: "Saskatchewan", image: "assets/plates/saskatchewan.png" },
     { name: "Northwest Territories", image: "assets/plates/northwest_territories.png" },
     { name: "Nunavut", image: "assets/plates/nunavut.png" },
-    { name: "Yukon", image: "assets/plates/yukon.png" }
+    { name: "Yukon", image: "assets/plates/yukon.png" },
+    { name: "Canada Federal Government", image: "assets/plates/cangov.png" }
 ]
 };
 // Map to store state names to their corresponding Airtable Record IDs
