@@ -140,6 +140,15 @@ h1 {
     margin-top: 30px;
 }
 
+.flag-icon {
+    width: 40px; /* Adjust the size as needed */
+    height: 40px;
+    border-radius: 50%; /* Makes the image circular */
+    object-fit: cover; /* Ensures the image covers the container */
+    margin-right: 10px; /* Adds some space between the image and text */
+}
+
+
 /* Tracker card style */
 .tracker {
     display: flex;
@@ -192,8 +201,6 @@ h1 {
     text-align: center;
 }
 
-
-
 /* Responsive adjustments */
 @media (max-width: 600px) {
     .tracker img {
@@ -215,4 +222,131 @@ h1 {
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+
+.leaderboard {
+    width: 100%;
+    max-width: 600px;
+    margin: 20px auto;
+    background-color: #1e1e1e;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+.leaderboard-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #333;
+    font-weight: 600;
+    color: #e0e0e0;
+}
+
+.leaderboard-item:last-child {
+    border-bottom: none;
+}
+
+.liquid-progress {
+    position: relative;
+    width: 100%; /* Full width of the parent container */
+    max-width: 800px; /* Maximum width for large screens, like desktops */
+    height: 50px; /* Base height for desktops */
+    background-color: #333;
+    border-radius: 15px;
+    overflow: hidden;
+    margin: 20px auto; /* Center the progress bar horizontally */
+}
+
+
+.liquid {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%; /* Full width of the container */
+    height: 0; /* Start with height of 0, adjusted dynamically by JavaScript */
+    background-color: #4a90e2;
+    border-radius: 15px;
+    overflow: hidden;
+    transition: height 0.3s ease; /* Smooth transition for height changes */
+}
+
+
+.wave {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 200%; /* Double the width for a smooth wave effect */
+    height: 200%; /* Double the height for continuous wave motion */
+    background: rgba(255, 255, 255, 0.3); /* Lighter overlay color for the wave */
+    border-radius: 50%;
+    opacity: 0.5;
+}
+
+.wave1 {
+    animation: wave1-animation 6s infinite ease-in-out; /* Smooth wave animation */
+}
+
+.wave2 {
+    animation: wave2-animation 7s infinite ease-in-out; /* Second wave with a different speed */
+}
+
+@keyframes wave1-animation {
+    0% {
+        transform: translateY(0);
+    }
+    25% {
+        transform: translateY(-5%);
+    }
+    50% {
+        transform: translateY(-10%);
+    }
+    75% {
+        transform: translateY(-5%);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+@keyframes wave2-animation {
+    0% {
+        transform: translateY(0);
+    }
+    25% {
+        transform: translateY(3%);
+    }
+    50% {
+        transform: translateY(6%);
+    }
+    75% {
+        transform: translateY(3%);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+/* Responsive Design for Medium Screens (Tablets and Small Laptops) */
+@media (max-width: 1024px) {
+    .liquid-progress {
+        max-width: 600px; /* Reduce max width for tablets and small laptops */
+        height: 40px; /* Reduce height */
+    }
+}
+
+/* Responsive Design for Small Screens (Mobile Devices) */
+@media (max-width: 768px) {
+    .liquid-progress {
+        max-width: 100%; /* Take full width on mobile */
+        height: 35px; /* Further reduce height for smaller screens */
+    }
+}
+
+/* Responsive Design for Very Small Screens (Phones) */
+@media (max-width: 480px) {
+    .liquid-progress {
+        height: 30px; /* Minimum height for very small screens */
+    }
 }
