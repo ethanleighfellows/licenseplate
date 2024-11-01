@@ -95,6 +95,56 @@ body {
     animation: spin 1s linear infinite;
 }
 
+.button-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+    margin-bottom: 20px;
+}
+
+.nav-button {
+    display: inline-block;
+    background: linear-gradient(45deg, #800080, #ff00ff); /* Initial gradient colors */
+    background-size: 200% 200%; /* Double the size for smooth animation */
+    color: white;
+    font-weight: 600;
+    font-family: 'Poppins', sans-serif;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    transition: transform 0.2s ease;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    animation: gradient-shift 5s ease infinite; /* Animation for gradient */
+}
+
+.nav-button:hover {
+    transform: translateY(-2px); /* Slight lift effect on hover */
+}
+
+.nav-button:active {
+    transform: translateY(0); /* Reset lift effect when clicked */
+}
+
+@keyframes gradient-shift {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+@media (max-width: 600px) {
+    .nav-button {
+        padding: 8px 16px;
+        font-size: 14px;
+    }
+}
+
+
 h1 {
     text-align: center;
     padding: 20px;
