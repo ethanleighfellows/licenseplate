@@ -4,6 +4,7 @@ body {
     color: #e0e0e0;
     margin: 0;
     padding: 0;
+    /* overflow: hidden;  Remove this line to allow scrolling */
 }
 
 /* Pop-up Style */
@@ -12,7 +13,7 @@ body {
     bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
-    background-color: rgba(74, 144, 226, 0.9);
+    background-color: rgba(74, 144, 226, 0.9);  /* Blue color with transparency */
     color: #fff;
     padding: 10px 20px;
     border-radius: 8px;
@@ -29,7 +30,7 @@ body {
     transform: translateX(-50%) translateY(-10px);
 }
 
-/* Make pop-up mobile-friendly */
+/* Make popup mobile-friendly */
 @media (max-width: 600px) {
     .popup {
         font-size: 14px;
@@ -38,16 +39,18 @@ body {
     }
 }
 
+
 #particles-js {
-    position: fixed;
+    position: fixed; /* Fixed positioning to cover the full viewport */
     top: 0;
     left: 0;
     width: 100%;
-    height: 100vh;
-    z-index: -1;
+    height: 100vh; /* Set to viewport height */
+    z-index: -1; /* Ensures particles stay behind all other content */
     pointer-events: none;
 }
 
+/* Password Overlay */
 #password-overlay {
     position: fixed;
     top: 0;
@@ -92,69 +95,21 @@ body {
     animation: spin 1s linear infinite;
 }
 
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-/* Button Container */
-.button-container {
-    display: flex;
-    justify-content: center;
-    margin-top: 15px;
-    margin-bottom: 20px;
-}
-
-.nav-button {
-    display: inline-block;
-    background: linear-gradient(45deg, #800080, #ff00ff);
-    background-size: 200% 200%;
-    color: white;
-    font-weight: 600;
-    font-family: 'Poppins', sans-serif;
-    text-decoration: none;
-    padding: 10px 20px;
-    border-radius: 8px;
-    transition: transform 0.2s ease;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-    animation: gradient-shift 5s ease infinite;
-}
-
-.nav-button:hover {
-    transform: translateY(-2px);
-}
-
-.nav-button:active {
-    transform: translateY(0);
-}
-
-@keyframes gradient-shift {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
-
-@media (max-width: 600px) {
-    .nav-button {
-        padding: 8px 16px;
-        font-size: 14px;
-    }
-}
-
 h1 {
     text-align: center;
     padding: 20px;
     font-weight: 600;
-    color: #4a90e2;
+    color: #4a90e2;  /* Blue accent for title */
 }
 
 .search-container {
     display: flex;
     justify-content: center;
     margin: 20px;
-    z-index: 1;
+    z-index: 1; /* Ensure it appears above particles */
     position: relative;
 }
+
 
 .search-input {
     padding: 10px;
@@ -169,29 +124,37 @@ h1 {
 .tracker-container {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: center; /* Center content horizontally */
     margin: 0 auto;
     width: 90%;
-    max-width: 600px;
-    z-index: 1;
+    max-width: 600px; /* Restrict max width for better readability */
+    z-index: 1; /* Place above particles */
     position: relative;
-    padding-bottom: 20px;
+    padding-bottom: 20px; /* Add bottom padding to prevent clipping */
+}
+
+.country-header {
+    font-size: 24px;
+    font-weight: 600;
+    color: #4a90e2;
+    margin-top: 30px;
 }
 
 .flag-icon {
-    width: 40px;
+    width: 40px; /* Adjust the size as needed */
     height: 40px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-right: 10px;
+    border-radius: 50%; /* Makes the image circular */
+    object-fit: cover; /* Ensures the image covers the container */
+    margin-right: 10px; /* Adds some space between the image and text */
 }
 
-/* Tracker Card Style */
+
+/* Tracker card style */
 .tracker {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background-color: #1e1e1e;
+    background-color: #1e1e1e;  /* Slightly lighter dark background */
     border-radius: 10px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
     padding: 15px;
@@ -205,6 +168,7 @@ h1 {
     transform: translateY(-5px);
 }
 
+/* License plate image style */
 .tracker img {
     width: 80px;
     height: auto;
@@ -212,8 +176,9 @@ h1 {
     margin-right: 20px;
 }
 
+/* Button and counter styles */
 .tracker button {
-    background-color: #4a90e2;
+    background-color: #4a90e2;  /* Blue accent */
     color: white;
     border: none;
     border-radius: 5px;
@@ -224,18 +189,19 @@ h1 {
 }
 
 .tracker button:hover {
-    background-color: #357abd;
+    background-color: #357abd;  /* Darker blue on hover */
 }
 
 .counter {
     font-weight: 600;
     font-size: 18px;
-    color: #e0e0e0;
+    color: #e0e0e0;  /* Light gray for text */
     margin: 0 15px;
     width: 30px;
     text-align: center;
 }
 
+/* Responsive adjustments */
 @media (max-width: 600px) {
     .tracker img {
         width: 60px;
@@ -251,6 +217,13 @@ h1 {
         font-size: 14px;
     }
 }
+
+/* Spinner animation */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
 
 .leaderboard {
     width: 100%;
@@ -277,75 +250,103 @@ h1 {
 
 .liquid-progress {
     position: relative;
-    width: 100%;
-    max-width: 800px;
-    height: 50px;
+    width: 100%; /* Full width of the parent container */
+    max-width: 800px; /* Maximum width for large screens, like desktops */
+    height: 50px; /* Base height for desktops */
     background-color: #333;
     border-radius: 15px;
     overflow: hidden;
-    margin: 20px auto;
+    margin: 20px auto; /* Center the progress bar horizontally */
 }
+
 
 .liquid {
     position: absolute;
     bottom: 0;
     left: 0;
-    width: 100%;
-    height: 0;
+    width: 100%; /* Full width of the container */
+    height: 0; /* Start with height of 0, adjusted dynamically by JavaScript */
     background-color: #4a90e2;
     border-radius: 15px;
-    transition: height 0.3s ease;
+    overflow: hidden;
+    transition: height 0.3s ease; /* Smooth transition for height changes */
 }
+
 
 .wave {
     position: absolute;
     bottom: 0;
     left: 0;
-    width: 200%;
-    height: 200%;
-    background: rgba(255, 255, 255, 0.3);
+    width: 200%; /* Double the width for a smooth wave effect */
+    height: 200%; /* Double the height for continuous wave motion */
+    background: rgba(255, 255, 255, 0.3); /* Lighter overlay color for the wave */
     border-radius: 50%;
     opacity: 0.5;
 }
 
 .wave1 {
-    animation: wave1-animation 6s infinite ease-in-out;
+    animation: wave1-animation 6s infinite ease-in-out; /* Smooth wave animation */
 }
 
 .wave2 {
-    animation: wave2-animation 7s infinite ease-in-out;
+    animation: wave2-animation 7s infinite ease-in-out; /* Second wave with a different speed */
 }
 
 @keyframes wave1-animation {
-    0%, 100% { transform: translateY(0); }
-    25% { transform: translateY(-5%); }
-    50% { transform: translateY(-10%); }
-    75% { transform: translateY(-5%); }
+    0% {
+        transform: translateY(0);
+    }
+    25% {
+        transform: translateY(-5%);
+    }
+    50% {
+        transform: translateY(-10%);
+    }
+    75% {
+        transform: translateY(-5%);
+    }
+    100% {
+        transform: translateY(0);
+    }
 }
 
 @keyframes wave2-animation {
-    0%, 100% { transform: translateY(0); }
-    25% { transform: translateY(3%); }
-    50% { transform: translateY(6%); }
-    75% { transform: translateY(3%); }
+    0% {
+        transform: translateY(0);
+    }
+    25% {
+        transform: translateY(3%);
+    }
+    50% {
+        transform: translateY(6%);
+    }
+    75% {
+        transform: translateY(3%);
+    }
+    100% {
+        transform: translateY(0);
+    }
 }
 
+/* Responsive Design for Medium Screens (Tablets and Small Laptops) */
 @media (max-width: 1024px) {
     .liquid-progress {
-        max-width: 600px;
-        height: 40px;
+        max-width: 600px; /* Reduce max width for tablets and small laptops */
+        height: 40px; /* Reduce height */
     }
 }
 
+/* Responsive Design for Small Screens (Mobile Devices) */
 @media (max-width: 768px) {
     .liquid-progress {
-        max-width: 100%;
-        height: 35px;
+        max-width: 100%; /* Take full width on mobile */
+        height: 35px; /* Further reduce height for smaller screens */
     }
 }
 
+/* Responsive Design for Very Small Screens (Phones) */
 @media (max-width: 480px) {
     .liquid-progress {
-        height: 30px;
+        height: 30px; /* Minimum height for very small screens */
     }
 }
