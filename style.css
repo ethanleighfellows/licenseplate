@@ -349,4 +349,41 @@ h1 {
     .liquid-progress {
         height: 30px; /* Minimum height for very small screens */
     }
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+    margin-bottom: 20px;
+}
+
+.nav-button {
+    display: inline-block;
+    background-color: #4a90e2; /* Blue accent color */
+    color: white;
+    font-weight: 600;
+    font-family: 'Poppins', sans-serif;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.nav-button:hover {
+    background-color: #357abd; /* Darker blue on hover */
+    transform: translateY(-2px); /* Slight lift effect on hover */
+}
+
+.nav-button:active {
+    transform: translateY(0); /* Reset lift effect when clicked */
+}
+
+@media (max-width: 600px) {
+    .nav-button {
+        padding: 8px 16px;
+        font-size: 14px;
+    }
+}
+
 }
