@@ -1,5 +1,5 @@
 this is my license plate tracker. 
-i spend an inordinate amount of time at bus stops, as a fully licensed, but inactive driver.
+i spend an inordinate amount of time at bus stops, as a fully licensed, but inactive driver. (my behind needs a car)
 i often like to stare at cars going by. This way with my tracker it feels like playing pokemon. 
 im constantly on the look out for the next out of state plate. 
 i started this in ontario when on academic exchange at queen's university, but home is california.
