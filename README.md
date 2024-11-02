@@ -10,3 +10,13 @@ idk how you found this, and why you're reading this, but if you are feel free to
 try using the existing page since im a lazy coder n dont wanna add different users or whatever. thanks
 
 Start date for collecting was: 10/28/2024
+
+
+craziest plates ive seen when writing this are:
+
+a hawaii plate in san francisco
+the north west territories plate
+the france diplomatic plate also seen in san francisco on 16th and church
+and an alaska plate with the custom plate: vry nce
+
+bcuz some of these are before i wrote the app, i haven't added them fyi
