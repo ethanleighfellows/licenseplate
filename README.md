@@ -8,26 +8,3 @@ i was trying to mark all of the cars with CA plates or ON plates when in those p
 
 idk how you found this, and why you're reading this, but if you are feel free to clone it if you like. I just ask that you dont 
 try using the existing page since im a lazy coder n dont wanna add different users or whatever. thanks
-
-__
-.-'--`-._
-'-O---O--'  
-
-.-'--`-._
-'-O---O--' 
-
-       \
-.-`"""""`-..  
-'=()===()=-'
-
-    ____
- __/  |_\_
-|  _     _``-.
-'-(_)---(_)--'  
-
-
- _.-.___\__
-|  _      _`-.   
-'-(_)----(_)--`
-  
-(these r supposed to be cars)
