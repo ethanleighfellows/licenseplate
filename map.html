@@ -201,6 +201,11 @@
     addRegions();
     fetchAirtableData();
     </script>
-    <script src="script/particles.js"></script>
+  <script>
+    // Initialize particles.js
+    particlesJS.load('particles-js', 'script/particles.json', function() {
+        console.log('Particles.js configuration loaded');
+    });
+</script>
 </body>
 </html>
