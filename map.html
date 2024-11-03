@@ -112,7 +112,7 @@
                 }),
                 onEachFeature: (feature, layer) => {
                     const regionName = feature.properties.name;
-                    const value = stateToValueMap[regionName] || 0; // Get the value from the map
+                    const value = record.fields.Count; || 0; // Get the value from the map
                     const color = getColor(value);
 
                     // Create a custom tooltip with a heading and colored value
