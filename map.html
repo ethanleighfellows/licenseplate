@@ -64,7 +64,7 @@ const tableName = 'License Tracker';
         async function fetchAirtableData() {
             const url = `https://api.airtable.com/v0/${baseId}/${tableName}`;
             const response = await fetch(url, {
-                headers: { Authorization: `Bearer ${accessToken}` }
+                headers: { Authorization: `Bearer ${apiKey}` }
             });
             const data = await response.json();
             return data.records;
