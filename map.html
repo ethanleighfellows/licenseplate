@@ -71,7 +71,7 @@
                              '#696969';   // Grey for no value
     }
 
-    // Helper function to fetch data from Airtable and populate the stateToValueMap
+    // Function to fetch data from Airtable and populate the stateToValueMap
     async function fetchAirtableData() {
         try {
             const response = await fetch(`https://api.airtable.com/v0/${baseId}/${tableName}`, {
@@ -82,7 +82,7 @@
             // Populate the stateToValueMap with state names and their corresponding values from the "Count" column
             data.records.forEach(record => {
                 const state = record.fields.Region;
-                const value = record.fields.Count; // Use "Count" instead of "Value"
+                const value = record.fields.Count; // Use "Count" to get the value
                 stateToValueMap[state] = value; // Map state name to value
             });
 
@@ -112,7 +112,7 @@
                 }),
                 onEachFeature: (feature, layer) => {
                     const regionName = feature.properties.name;
-                    const value = stateToValueMap[regionName] || 0;
+                    const value = stateToValueMap[regionName] || 0; // Get the value from the map
                     const color = getColor(value);
 
                     // Create a custom tooltip with a heading and colored value
