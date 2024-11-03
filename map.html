@@ -58,6 +58,7 @@
 
     // Map to store state names to their corresponding Airtable values
     const stateToValueMap = {};
+    let dataLoaded = false; // Flag to check if Airtable data is loaded
 
     // Function to create a color gradient based on value
     function getColor(value) {
@@ -86,14 +87,14 @@
                 stateToValueMap[state] = value; // Map state name to value
             });
 
-            // Update the map colors after data is fetched
-            updateMapColors();
+            dataLoaded = true; // Set the flag to true once data is loaded
+            updateMapColors(); // Call the function to update map colors
         } catch (error) {
             console.error("Error fetching data from Airtable:", error);
         }
     }
 
-    // Function to load the GeoJSON file, map the data, and update colors
+    // Function to load the GeoJSON file, map the data, and set up the layers
     async function addRegions() {
         try {
             // Fetch the GeoJSON data from the local file
@@ -112,21 +113,30 @@
                 }),
                 onEachFeature: (feature, layer) => {
                     const regionName = feature.properties.name;
-                    const value = stateToValueMap[regionName] || 0; // Ensure we have a default value if undefined
-                    const color = getColor(value);
 
-                    // Debug: Log regionName and value to check if they are correct
-                    console.log(`Region: ${regionName}, Count Value from Airtable: ${value}`);
+                    // Wait until Airtable data is loaded before setting tooltips and colors
+                    if (dataLoaded) {
+                        const value = stateToValueMap[regionName] || 0;
+                        const color = getColor(value);
 
-                    // Create a custom tooltip with a heading and colored value
-                    layer.bindTooltip(
-                        `<div class="tooltip-heading">${regionName}</div>
-                         <div class="tooltip-value" style="color: ${color};">Value: ${value}</div>`,
-                        { className: 'leaflet-tooltip' }
-                    );
+                        // Debug: Log regionName and value to check if they are correct
+                        console.log(`Region: ${regionName}, Count Value from Airtable: ${value}`);
 
-                    // Update the fill color of each region based on the value
-                    layer.setStyle({ fillColor: color });
+                        // Create a custom tooltip with a heading and colored value
+                        layer.bindTooltip(
+                            `<div class="tooltip-heading">${regionName}</div>
+                             <div class="tooltip-value" style="color: ${color};">Value: ${value}</div>`,
+                            { className: 'leaflet-tooltip' }
+                        );
+
+                        // Update the fill color of each region based on the value
+                        layer.setStyle({ fillColor: color });
+                    } else {
+                        // If data isn't loaded yet, set up a basic tooltip
+                        layer.bindTooltip(`<div class="tooltip-heading">${regionName}</div>`, {
+                            className: 'leaflet-tooltip'
+                        });
+                    }
                 }
             }).addTo(map);
 
@@ -144,7 +154,7 @@
             return;
         }
 
-        // Iterate over each layer and update the fill color based on the stateToValueMap
+        // Iterate over each layer and update the fill color and tooltip based on the stateToValueMap
         window.geoJsonLayer.eachLayer(layer => {
             const regionName = layer.feature.properties.name;
             const value = stateToValueMap[regionName];
@@ -152,6 +162,13 @@
 
             if (value !== undefined) {
                 layer.setStyle({ fillColor: color });
+
+                // Update the tooltip with the value
+                layer.bindTooltip(
+                    `<div class="tooltip-heading">${regionName}</div>
+                     <div class="tooltip-value" style="color: ${color};">Value: ${value}</div>`,
+                    { className: 'leaflet-tooltip' }
+                );
             } else {
                 console.warn(`No value found for region: ${regionName}`);
             }
