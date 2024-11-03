@@ -34,43 +34,49 @@
 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>
-        // Airtable API Information
+    // Airtable API Information
 const apiKey = 'patkHvP79DLxdSXdS.f5426d3dede7ffc9f385aca56989548f5dea2946ae1ddf8813e3a43b857a81d1';
 const baseId = 'appyrizLAyOlYArpI';
 const tableName = 'License Tracker';
 
-        // Initialize Map with a dark-themed tile layer
-        const map = L.map('map').setView([37.8, -96], 4); // Centered over North America
+// Map to store state names to their corresponding Airtable values
+const stateToValueMap = {};
 
-        // Using a dark-themed tile layer from CartoDB
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-            maxZoom: 18,
-            attribution: '&copy; <a href="https://carto.com/">CartoDB</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(map);
+// Function to create a color gradient based on value
+function getColor(value) {
+    return value > 100 ? '#FF4500' : 
+           value > 75  ? '#FF6347' :
+           value > 50  ? '#FF7F50' :
+           value > 25  ? '#FF8C00' :
+           value > 10  ? '#FFA07A' :
+           value > 5   ? '#FFD700' :
+           value > 0   ? '#FFFFE0' :
+                         '#696969'; // Grey for no value
+}
 
-        // Function to create a color gradient based on value
-        function getColor(value) {
-            return value > 100 ? '#FF4500' : 
-                   value > 75  ? '#FF6347' :
-                   value > 50  ? '#FF7F50' :
-                   value > 25  ? '#FF8C00' :
-                   value > 10  ? '#FFA07A' :
-                   value > 5   ? '#FFD700' :
-                   value > 0   ? '#FFFFE0' :
-                                 '#696969'; // Grey for no value
-        }
+// Helper function to fetch data from Airtable and populate the stateToValueMap
+async function fetchAirtableData() {
+    try {
+        const response = await fetch(`https://api.airtable.com/v0/${baseId}/${tableName}`, {
+            headers: { Authorization: `Bearer ${apiKey}` }
+        });
+        const data = await response.json();
 
-        // Function to fetch data from Airtable
-        async function fetchAirtableData() {
-            const url = `https://api.airtable.com/v0/${baseId}/${tableName}`;
-            const response = await fetch(url, {
-                headers: { Authorization: `Bearer ${apiKey}` }
-            });
-            const data = await response.json();
-            return data.records;
-        }
+        // Populate the stateToValueMap with state names and their corresponding values
+        data.records.forEach(record => {
+            const state = record.fields.Region;
+            const value = record.fields.Value;
+            stateToValueMap[state] = value; // Map state name to value
+        });
 
-        // Function to load the GeoJSON file and map all data
+        // Call the function to update the map colors with the fetched data
+        updateMapColors();
+    } catch (error) {
+        console.error("Error fetching data from Airtable:", error);
+    }
+}
+
+// Function to load the GeoJSON file, map the data, and update colors
 async function addRegions() {
     try {
         // Fetch the GeoJSON data from the local file
@@ -89,45 +95,48 @@ async function addRegions() {
             })
         }).addTo(map);
 
-        // Fetch the data from Airtable
-        const airtableRecords = await fetchAirtableData();
-
-        // Create a map from Region name to Value
-        const valueMap = {};
-        airtableRecords.forEach(record => {
-            const regionName = record.fields['Region'].trim();
-            const value = record.fields['Value'];
-            valueMap[regionName] = value;
-        });
-
-        // Debug: Log valueMap to ensure data is loaded correctly
-        console.log("Value Map from Airtable:", valueMap);
-
-        // Update the colors of the GeoJSON regions based on the Airtable values
-        geoJsonLayer.eachLayer(layer => {
-            const regionName = layer.feature.properties.name;
-            
-            // Debug: Log region names from the GeoJSON to check matching
-            console.log("Checking Region:", regionName);
-
-            if (valueMap[regionName] !== undefined) {
-                const value = valueMap[regionName];
-                layer.setStyle({
-                    fillColor: getColor(value)
-                });
-                // Debug: Log successful matches and the value being used
-                console.log(`Updated ${regionName} with value: ${value}`);
-            } else {
-                // Debug: Log regions that don't match
-                console.log(`No match found for ${regionName}`);
-            }
-        });
+        // Store the layer for updating colors later
+        window.geoJsonLayer = geoJsonLayer;
     } catch (error) {
-        console.error('Error loading data:', error);
+        console.error("Error loading GeoJSON data:", error);
     }
 }
 
+// Function to update the map colors based on the Airtable data
+function updateMapColors() {
+    if (!window.geoJsonLayer) {
+        console.error("GeoJSON layer is not loaded yet.");
+        return;
+    }
+
+    // Iterate over each layer and update the fill color based on the stateToValueMap
+    window.geoJsonLayer.eachLayer(layer => {
+        const regionName = layer.feature.properties.name;
+        const value = stateToValueMap[regionName];
+
+        if (value !== undefined) {
+            layer.setStyle({
+                fillColor: getColor(value)
+            });
+        } else {
+            console.warn(`No value found for region: ${regionName}`);
+        }
+    });
+}
+
+// Initialize Map with a dark-themed tile layer
+const map = L.map('map').setView([37.8, -96], 4); // Centered over North America
+
+// Using a dark-themed tile layer from CartoDB
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    maxZoom: 18,
+    attribution: '&copy; <a href="https://carto.com/">CartoDB</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(map);
+
+// Load the GeoJSON regions and fetch Airtable data
 addRegions();
+fetchAirtableData();
+
     </script>
 </body>
 </html>
