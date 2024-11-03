@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>License Plate Tracker Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        /* Dark mode styling for the map and body */
+        body {
+            margin: 0;
+            background-color: #121212;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        h1 {
+            margin-top: 20px;
+            color: #ffffff;
+        }
+        #map {
+            height: 80vh;
+            width: 90vw;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <h1>License Plate Tracker</h1>
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        // Airtable API Information
+        const accessToken = 'patkHvP79DLxdSXdS.f5426d3dede7ffc9f385aca56989548f5dea2946ae1ddf8813e3a43b857a81d1'; // Replace with your Airtable PAT
+    const baseId = 'appyrizLAyOlYArpI.'; // Replace with your Airtable Base ID
+    const tableName = 'License Tracker'; // Replace with your table name
+
+        // Initialize Map with a dark-themed tile layer
+        const map = L.map('map').setView([37.8, -96], 4); // Centered over North America
+
+        // Using a dark-themed tile layer from CartoDB
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            maxZoom: 18,
+            attribution: '&copy; <a href="https://carto.com/">CartoDB</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Function to create a color gradient based on value
+        function getColor(value) {
+            return value > 100 ? '#FF4500' : 
+                   value > 75  ? '#FF6347' :
+                   value > 50  ? '#FF7F50' :
+                   value > 25  ? '#FF8C00' :
+                   value > 10  ? '#FFA07A' :
+                   value > 5   ? '#FFD700' :
+                   value > 0   ? '#FFFFE0' :
+                                 '#696969'; // Grey for no value
+        }
+
+        // Function to fetch data from Airtable
+        async function fetchAirtableData() {
+            const url = `https://api.airtable.com/v0/${baseId}/${tableName}`;
+            const response = await fetch(url, {
+                headers: { Authorization: `Bearer ${accessToken}` }
+            });
+            const data = await response.json();
+            return data.records;
+        }
+
+        // Function to load and add regions to the map
+        async function addRegions() {
+            try {
+                // Fetch the GeoJSON data from the local file
+                const geojsonResponse = await fetch('assets/other/updated_merged_geojson.json');
+                const regions = await geojsonResponse.json();
+
+                // Fetch the data from Airtable
+                const airtableRecords = await fetchAirtableData();
+
+                // Create a map from Region name to Value
+                const valueMap = {};
+                airtableRecords.forEach(record => {
+                    const regionName = record.fields['Region'];
+                    const value = record.fields['Value'];
+                    valueMap[regionName] = value;
+                });
+
+                // Update the GeoJSON features with the values from Airtable
+                regions.features.forEach(feature => {
+                    const regionName = feature.properties.name;
+                    if (valueMap[regionName] !== undefined) {
+                        feature.properties.value = valueMap[regionName];
+                        feature.properties.color = getColor(valueMap[regionName]);
+                    } else {
+                        feature.properties.value = 0;
+                        feature.properties.color = getColor(0);
+                    }
+                });
+
+                // Add regions to the map with coloring
+                L.geoJSON(regions, {
+                    style: feature => ({
+                        fillColor: feature.properties.color,
+                        weight: 1,
+                        opacity: 0.7,
+                        color: '#2F4F4F', // Dark slate grey border
+                        dashArray: '3',
+                        fillOpacity: 0.8
+                    })
+                }).addTo(map);
+            } catch (error) {
+                console.error('Error loading data:', error);
+            }
+        }
+
+        addRegions();
+    </script>
+</body>
+</html>
