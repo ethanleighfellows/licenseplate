@@ -35,6 +35,7 @@
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>
     // Airtable API Information
+// Airtable API Information
 const apiKey = 'patkHvP79DLxdSXdS.f5426d3dede7ffc9f385aca56989548f5dea2946ae1ddf8813e3a43b857a81d1';
 const baseId = 'appyrizLAyOlYArpI';
 const tableName = 'License Tracker';
@@ -62,10 +63,10 @@ async function fetchAirtableData() {
         });
         const data = await response.json();
 
-        // Populate the stateToValueMap with state names and their corresponding values
+        // Populate the stateToValueMap with state names and their corresponding values from the "Count" column
         data.records.forEach(record => {
             const state = record.fields.Region;
-            const value = record.fields.Value;
+            const value = record.fields.Count; // Use "Count" instead of "Value"
             stateToValueMap[state] = value; // Map state name to value
         });
 
