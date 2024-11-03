@@ -86,7 +86,7 @@
                 stateToValueMap[state] = value; // Map state name to value
             });
 
-            // Call the function to update the map colors with the fetched data
+            // Update the map colors after data is fetched
             updateMapColors();
         } catch (error) {
             console.error("Error fetching data from Airtable:", error);
@@ -124,6 +124,9 @@
                          <div class="tooltip-value" style="color: ${color};">Value: ${value}</div>`,
                         { className: 'leaflet-tooltip' }
                     );
+
+                    // Update the fill color of each region based on the value
+                    layer.setStyle({ fillColor: color });
                 }
             }).addTo(map);
 
@@ -145,11 +148,10 @@
         window.geoJsonLayer.eachLayer(layer => {
             const regionName = layer.feature.properties.name;
             const value = stateToValueMap[regionName];
+            const color = getColor(value);
 
             if (value !== undefined) {
-                layer.setStyle({
-                    fillColor: getColor(value)
-                });
+                layer.setStyle({ fillColor: color });
             } else {
                 console.warn(`No value found for region: ${regionName}`);
             }
