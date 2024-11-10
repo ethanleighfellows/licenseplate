@@ -1,95 +1,100 @@
-// Set a cookie with the specified name, value, and expiration days
-function setCookie(name, value, days) {
-    const d = new Date();
-    d.setTime(d.getTime() + (days * 24 * 60 * 60 * 1000));
-    const expires = "expires=" + d.toUTCString();
-    document.cookie = `${name}=${value};${expires};path=/`;
-}
+document.addEventListener("DOMContentLoaded", () => {
+    // Airtable setup
+    const accessToken = 'patkHvP79DLxdSXdS.f5426d3dede7ffc9f385aca56989548f5dea2946ae1ddf8813e3a43b857a81d1'; // Replace with your Airtable PAT
+    const baseId = 'appyrizLAyOlYArpI'; // Replace with your Airtable Base ID
+    const tableName = 'License Tracker'; // Replace with your table name
 
-function showPopup(message) {
-    const popup = document.createElement('div');
-    popup.classList.add('popup');
-    popup.innerText = message;
+    const trackerContainer = document.getElementById("tracker-container");
+    const searchInput = document.getElementById("search-input");
 
-    document.body.appendChild(popup);
+    if (typeof statesByCountry !== "undefined" && trackerContainer && searchInput) {
 
-    setTimeout(() => popup.classList.add('show'), 10); // Show pop-up
-    setTimeout(() => popup.classList.remove('show'), 2000); // Fade-out after 2s
-    setTimeout(() => popup.remove(), 3000); // Remove from DOM after animation
-}
+        function displayStates(records) {
+            trackerContainer.innerHTML = ""; // Clear previous content
 
-function showPopup(message) {
-    // Create pop-up element
-    const popup = document.createElement('div');
-    popup.classList.add('popup');
-    popup.innerText = message;
+            records.forEach(record => {
+                const state = record.fields.Region;
+                const count = record.fields.Count;
+                const recordId = record.id;
+                const imagePath = getImageForState(state);
 
-    // Add pop-up to the body
-    document.body.appendChild(popup);
+                const trackerDiv = document.createElement("div");
+                trackerDiv.className = "tracker";
 
-    // Animate the pop-up fade-in and fade-out
-    setTimeout(() => popup.classList.add('show'), 10);  // Delay for CSS transition
-    setTimeout(() => popup.classList.remove('show'), 2000); // Show for 2s, then fade-out
-    setTimeout(() => popup.remove(), 3000);  // Remove from DOM after animation completes
-}
+                const stateImage = document.createElement("img");
+                stateImage.src = imagePath || "assets/default.png";
+                stateImage.alt = `${state} license plate`;
 
-// Example usage: call showPopup() when a point is added
-function incrementCounter() {
-    // Assume logic to increment the counter here
-    showPopup("Point added!");  // Call pop-up with message
-}
+                const stateLabel = document.createElement("span");
+                stateLabel.textContent = state;
 
+                const countLabel = document.createElement("span");
+                countLabel.className = "counter";
+                countLabel.id = `count-${recordId}`;
+                countLabel.textContent = count;
 
+                const decrementButton = document.createElement("button");
+                decrementButton.textContent = "-";
+                decrementButton.onclick = () => updateCount(recordId, parseInt(countLabel.textContent) - 1, decrementButton);
 
-// Get the value of a cookie by name
-function getCookie(name) {
-    const nameEQ = name + "=";
-    const cookiesArray = document.cookie.split(';');
-    for (let i = 0; i < cookiesArray.length; i++) {
-        let cookie = cookiesArray[i].trim();
-        if (cookie.indexOf(nameEQ) === 0) {
-            return cookie.substring(nameEQ.length, cookie.length);
+                const incrementButton = document.createElement("button");
+                incrementButton.textContent = "+";
+                incrementButton.onclick = () => updateCount(recordId, parseInt(countLabel.textContent) + 1, incrementButton);
+
+                trackerDiv.appendChild(stateImage);
+                trackerDiv.appendChild(stateLabel);
+                trackerDiv.appendChild(decrementButton);
+                trackerDiv.appendChild(countLabel);
+                trackerDiv.appendChild(incrementButton);
+                trackerContainer.appendChild(trackerDiv);
+            });
         }
+
+        async function fetchData() {
+            try {
+                const response = await fetch(`https://api.airtable.com/v0/${baseId}/${tableName}`, {
+                    headers: { Authorization: `Bearer ${accessToken}` }
+                });
+                const data = await response.json();
+                displayStates(data.records); // Pass records to displayStates
+            } catch (error) {
+                console.error("Error fetching data from Airtable:", error);
+            }
+        }
+
+        async function updateCount(recordId, newCount, button) {
+            try {
+                // Update Airtable record
+                const response = await fetch(`https://api.airtable.com/v0/${baseId}/${tableName}/${recordId}`, {
+                    method: "PATCH",
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ fields: { Count: newCount } })
+                });
+                const data = await response.json();
+                
+                // Update displayed count
+                document.getElementById(`count-${recordId}`).textContent = data.fields.Count;
+
+                // Temporarily show success style on button
+                const originalText = button.textContent;
+                button.style.backgroundColor = "green";
+                button.textContent = "✔";
+
+                // Revert button style after 3 seconds
+                setTimeout(() => {
+                    button.style.backgroundColor = "";
+                    button.textContent = originalText;
+                }, 3000);
+            } catch (error) {
+                console.error("Error updating count in Airtable:", error);
+            }
+        }
+
+        fetchData();
+    } else {
+        console.error("Missing required elements or data.");
     }
-    return null;
-}
-
-// Check password and set cookie if correct
-function checkPassword() {
-    const passwordInput = document.getElementById('password-input');
-    const errorMessage = document.getElementById('password-error');
-    const correctPassword = 'password'; // Replace with actual password
-
-    if (passwordInput && passwordInput.value === correctPassword) {
-        setCookie("accessGranted", "true", 7); // Cookie lasts for 7 days
-        document.getElementById('password-overlay').style.display = 'none';
-        document.body.style.overflow = 'auto'; // Enable scroll
-    } else if (errorMessage) {
-        errorMessage.style.display = 'block';
-    }
-}
-
-// Check if access cookie is set
-function checkAccess() {
-    const accessGranted = getCookie("accessGranted");
-    const overlay = document.getElementById('password-overlay');
-    if (accessGranted === "true" && overlay) {
-        overlay.style.display = 'none';
-        document.body.style.overflow = 'auto'; // Enable scroll
-    }
-}
-
-// Call checkAccess on page load
-document.addEventListener("DOMContentLoaded", checkAccess);
-
-// Preloader
-window.addEventListener('load', function() {
-    const preloader = document.getElementById('preloader');
-    if (preloader) {
-        preloader.style.display = 'none';
-    }
-});
-
-particlesJS.load('particles-js', 'assets/particles.json', function() {
-  console.log('callback - particles.js config loaded');
 });
