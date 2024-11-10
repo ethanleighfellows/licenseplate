@@ -35,11 +35,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 const decrementButton = document.createElement("button");
                 decrementButton.textContent = "-";
-                decrementButton.onclick = () => updateCount(recordId, parseInt(countLabel.textContent) - 1, decrementButton);
+                decrementButton.onclick = () => updateCount(recordId, parseInt(countLabel.textContent) - 1, countLabel, decrementButton);
 
                 const incrementButton = document.createElement("button");
                 incrementButton.textContent = "+";
-                incrementButton.onclick = () => updateCount(recordId, parseInt(countLabel.textContent) + 1, incrementButton);
+                incrementButton.onclick = () => updateCount(recordId, parseInt(countLabel.textContent) + 1, countLabel, incrementButton);
 
                 trackerDiv.appendChild(stateImage);
                 trackerDiv.appendChild(stateLabel);
@@ -62,7 +62,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
 
-        async function updateCount(recordId, newCount, button) {
+        async function updateCount(recordId, newCount, countLabel, button) {
             try {
                 // Update Airtable record
                 const response = await fetch(`https://api.airtable.com/v0/${baseId}/${tableName}/${recordId}`, {
@@ -76,7 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const data = await response.json();
                 
                 // Update displayed count
-                document.getElementById(`count-${recordId}`).textContent = data.fields.Count;
+                countLabel.textContent = data.fields.Count;
 
                 // Temporarily show success style on button
                 const originalText = button.textContent;
