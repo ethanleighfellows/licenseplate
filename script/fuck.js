@@ -35,11 +35,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 const decrementButton = document.createElement("button");
                 decrementButton.textContent = "-";
-                decrementButton.onclick = () => updateCount(recordId, count - 1, decrementButton);
+                decrementButton.onclick = () => updateCount(recordId, parseInt(countLabel.textContent) - 1, decrementButton);
 
                 const incrementButton = document.createElement("button");
                 incrementButton.textContent = "+";
-                incrementButton.onclick = () => updateCount(recordId, count + 1, incrementButton);
+                incrementButton.onclick = () => updateCount(recordId, parseInt(countLabel.textContent) + 1, incrementButton);
 
                 trackerDiv.appendChild(stateImage);
                 trackerDiv.appendChild(stateLabel);
@@ -56,7 +56,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     headers: { Authorization: `Bearer ${accessToken}` }
                 });
                 const data = await response.json();
-                console.log("Fetched data:", data); // Check the structure of fetched data
                 displayStates(data.records); // Pass records to displayStates
             } catch (error) {
                 console.error("Error fetching data from Airtable:", error);
@@ -75,40 +74,25 @@ document.addEventListener("DOMContentLoaded", () => {
                     body: JSON.stringify({ fields: { Count: newCount } })
                 });
                 const data = await response.json();
+                
+                // Update displayed count
                 document.getElementById(`count-${recordId}`).textContent = data.fields.Count;
 
-                // Change button style to indicate success
+                // Temporarily show success style on button
+                const originalText = button.textContent;
                 button.style.backgroundColor = "green";
                 button.textContent = "✔";
 
                 // Revert button style after 3 seconds
                 setTimeout(() => {
                     button.style.backgroundColor = "";
-                    button.textContent = button.classList.contains("increment") ? "+" : "-";
+                    button.textContent = originalText;
                 }, 3000);
             } catch (error) {
                 console.error("Error updating count in Airtable:", error);
             }
         }
 
-        async function loadCounts() {
-            try {
-                const response = await fetch(`https://api.airtable.com/v0/${baseId}/${tableName}`, {
-                    headers: { Authorization: `Bearer ${accessToken}` }
-                });
-                const data = await response.json();
-                data.records.forEach(record => {
-                    const countLabel = document.getElementById(`count-${record.id}`);
-                    if (countLabel) {
-                        countLabel.textContent = record.fields.Count;
-                    }
-                });
-            } catch (error) {
-                console.error("Error loading counts from Airtable:", error);
-            }
-        }
-
-        loadCounts();
         fetchData();
     } else {
         console.error("Missing required elements or data.");
