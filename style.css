@@ -304,12 +304,11 @@ h1 {
     background-color: #333;
     border-radius: 15px;
     overflow: hidden;
-    margin: 20px auto; /* Center the progress bar horizontally */
+    margin-top: 0px;
+    margin-bottom: 0px;
 }
 
 .progress-bar {
-  display: flex;
-  flex-direction: row;
   align-items: center;
 }
 
