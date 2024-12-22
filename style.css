@@ -310,6 +310,10 @@ h1 {
 
 .progress-bar {
   align-items: center;
+  flex-direction: column;
+}
+.progress-bar label {
+  display: block;
 }
 
 .liquid {
