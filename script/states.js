@@ -214,41 +214,46 @@ function displayStates(records) {
 }
 
 // Function to update the count in Airtable using Record ID
-async function updateCount(recordId, action) {
-    console.log(`updateCount called for recordId: ${recordId}, action: ${action}`);
-    try {
-        const fetchResponse = await fetch(`https://api.airtable.com/v0/${baseId}/${tableName}/${recordId}`, {
-            headers: { Authorization: `Bearer ${apiKey}` }
-        });
-        const record = await fetchResponse.json();
-        console.log("Fetched record:", record);
-
-        const currentCount = record.fields.Count;
-        let newCount = currentCount;
-
-        if (action === 'increment') {
-            newCount += 1;
-        } else if (action === 'decrement') {
-            newCount -= 1;
+async function updateCount(recordId, action) {        async function updateCount(recordId, newCount) {
+            try {
+                const response = await fetch(https://api.airtable.com/v0/${baseId}/${tableName}/${recordId}, {
+                    method: "PATCH",
+                    headers: {
+                        Authorization: Bearer ${accessToken},
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ fields: { Count: newCount } })
+                });
+                const data = await response.json();
+                document.getElementById(count-${recordId}).textContent = data.fields.Count;
+            } catch (error) {
+                console.error("Error updating count in Airtable:", error);
+            }
         }
-        console.log(`Current count: ${currentCount}, New count: ${newCount}`);
 
-        const updateResponse = await fetch(`https://api.airtable.com/v0/${baseId}/${tableName}/${recordId}`, {
-            method: "PATCH",
-            headers: {
-                Authorization: `Bearer ${apiKey}`,
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ fields: { Count: newCount } })
-        });
-        const updatedRecord = await updateResponse.json();
-        console.log("Updated record:", updatedRecord);
+        async function loadCounts() {
+            try {
+                const response = await fetch(https://api.airtable.com/v0/${baseId}/${tableName}, {
+                    headers: { Authorization: Bearer ${accessToken} }
+                });
+                const data = await response.json();
+                data.records.forEach(record => {
+                    const countLabel = document.getElementById(count-${record.fields.Region});
+                    if (countLabel) {
+                        countLabel.textContent = record.fields.Count;
+                    }
+                });
+            } catch (error) {
+                console.error("Error loading counts from Airtable:", error);
+            }
+        }
 
-        document.getElementById(`count-${recordId}`).textContent = updatedRecord.fields.Count;
-    } catch (error) {
-        console.error("Error in updateCount:", error);
+        loadCounts();
+        fetchData();
+    } else {
+        console.error("Missing required elements or data.");
     }
-}
+});
 
 
         // Update the DOM with the new count
