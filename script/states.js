@@ -214,7 +214,7 @@ function displayStates(records) {
 }
 
 // Function to update the count in Airtable using Record ID
-async function updateCount(recordId, action) {        async function updateCount(recordId, newCount) {
+async function updateCount(recordId, newCount) {
             try {
                 const response = await fetch(https://api.airtable.com/v0/${baseId}/${tableName}/${recordId}, {
                     method: "PATCH",
