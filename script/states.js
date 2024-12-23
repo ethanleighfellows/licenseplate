@@ -196,11 +196,12 @@ function displayStates(records) {
 
                 const decrementButton = document.createElement("button");
                 decrementButton.textContent = "-";
-                decrementButton.onclick = () => updateCount(recordId, count - 1);
+                decrementButton.onclick = () => updateCount(recordId, -1);
+
 
                 const incrementButton = document.createElement("button");
                 incrementButton.textContent = "+";
-                incrementButton.onclick = () => updateCount(recordId, count + 1);
+                decrementButton.onclick = () => updateCount(recordId, +1);
 
                 trackerDiv.appendChild(stateImage);
                 trackerDiv.appendChild(stateLabel);
