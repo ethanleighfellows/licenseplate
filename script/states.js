@@ -195,13 +195,13 @@ function displayStates(records) {
                 countLabel.textContent = count;
 
                 const decrementButton = document.createElement("button");
-                decrementButton.textContent = "-";
-                decrementButton.onclick = () => updateCount(recordId, count - 1);
+        decrementButton.textContent = "-";
+        decrementButton.onclick = () => updateCount(recordId, 'decrement'); // Use action name
 
-                const incrementButton = document.createElement("button");
-                incrementButton.textContent = "+";
-                incrementButton.onclick = () => updateCount(recordId, count + 1);
-
+const incrementButton = document.createElement("button");
+        incrementButton.textContent = "+";
+        incrementButton.onclick = () => updateCount(recordId, 'increment'); // Use action name
+              
                 trackerDiv.appendChild(stateImage);
                 trackerDiv.appendChild(stateLabel);
                 trackerDiv.appendChild(decrementButton);
@@ -219,8 +219,16 @@ async function updateCount(recordId, action) {
         const countLabel = document.getElementById(`count-${recordId}`);
         const currentCount = parseInt(countLabel.textContent, 10);
 
-        // Determine new count based on action
-        const newCount = action === 'increment' ? currentCount + 1 : currentCount - 1;
+        // Calculate new count based on the action
+        let newCount;
+        if (action === 'increment') {
+            newCount = currentCount + 1;
+        } else if (action === 'decrement') {
+            newCount = currentCount - 1;
+        } else {
+            console.error("Invalid action:", action);
+            return;
+        }
 
         // Update Airtable with the new count
         const response = await fetch(`https://api.airtable.com/v0/${baseId}/${tableName}/${recordId}`, {
@@ -240,6 +248,7 @@ async function updateCount(recordId, action) {
         console.error("Error updating count in Airtable:", error);
     }
 }
+
 
 
 // Search functionality
