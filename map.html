@@ -3,9 +3,8 @@
 <head>
     <title>License Plate Tracker Map</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <link rel="stylesheet" href="style.css" /> <!-- Linking the existing style.css -->
     <style>
-        /* Additional inline styles, if needed */
+        /* Dark mode styling for the map and body */
         body {
             margin: 0;
             background-color: #121212;
@@ -24,38 +23,192 @@
             color: #4a90e2;
         }
         #particles-js {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh;
-            z-index: -1;
-            pointer-events: none;
-        }
+    position: fixed; /* Fixed positioning to cover the full viewport */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh; /* Set to viewport height */
+    z-index: -1; /* Ensures particles stay behind all other content */
+    pointer-events: none;
+}
+
         #map {
             height: 80vh;
             width: 90vw;
             border-radius: 10px;
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
         }
+        /* Tooltip styling */
+        .leaflet-tooltip {
+            background-color: #2F4F4F;
+            color: #ffffff;
+            font-weight: bold;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #696969;
+        }
+        .tooltip-heading {
+            font-size: 16px;
+            margin-bottom: 4px;
+            color: #ffffff;
+        }
+        .tooltip-value {
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
     <h1>License Plate Tracker</h1>
-    <button class="nav-button" onclick="window.location.href='index.html';">Back to Home</button>
     <div id="particles-js"></div>
     <div id="map"></div>
 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>
-        // JavaScript content remains unchanged
-        // Airtable API Information and functions
-    </script>
-    <script src="script/particles.js"></script>
-    <script>
-        particlesJS.load('particles-js', 'script/particles.json', function() {
-            console.log('Particles.js configuration loaded');
+    // Airtable API Information
+    const apiKey = 'patkHvP79DLxdSXdS.f5426d3dede7ffc9f385aca56989548f5dea2946ae1ddf8813e3a43b857a81d1';
+    const baseId = 'appyrizLAyOlYArpI';
+    const tableName = 'License Tracker';
+
+    // Map to store state names to their corresponding Airtable values
+    const stateToValueMap = {};
+    let dataLoaded = false; // Flag to check if Airtable data is loaded
+
+    // Function to create a color gradient based on value
+    function getColor(value) {
+        return value > 100 ? '#4B0082' :  // Indigo
+               value > 75  ? '#6A0DAD' :  // Royal Purple
+               value > 50  ? '#800080' :  // Purple
+               value > 25  ? '#9932CC' :  // Dark Orchid
+               value > 10  ? '#BA55D3' :  // Medium Orchid
+               value > 5   ? '#D8BFD8' :  // Thistle
+               value > 2   ? '#E0C8E6' :
+               value > 0   ? '#E6E6FA' :  // Lavender
+                             '#696969';   // Grey for no value
+    }
+
+    // Function to fetch data from Airtable and populate the stateToValueMap
+    async function fetchAirtableData() {
+        try {
+            const response = await fetch(https://api.airtable.com/v0/${baseId}/${tableName}, {
+                headers: { Authorization: Bearer ${apiKey} }
+            });
+            const data = await response.json();
+
+            // Populate the stateToValueMap with state names and their corresponding values from the "Count" column
+            data.records.forEach(record => {
+                const state = record.fields.Region;
+                const value = record.fields.Count; // Use "Count" to get the value
+                stateToValueMap[state] = value; // Map state name to value
+            });
+
+            dataLoaded = true; // Set the flag to true once data is loaded
+            updateMapColors(); // Call the function to update map colors
+        } catch (error) {
+            console.error("Error fetching data from Airtable:", error);
+        }
+    }
+
+    // Function to load the GeoJSON file, map the data, and set up the layers
+    async function addRegions() {
+        try {
+            // Fetch the GeoJSON data from the local file
+            const geojsonResponse = await fetch('assets/other/updated_merged_geojson.json');
+            const regions = await geojsonResponse.json();
+
+            // Add the GeoJSON regions to the map
+            const geoJsonLayer = L.geoJSON(regions, {
+                style: feature => ({
+                    fillColor: '#696969', // Initial color (grey) before updating
+                    weight: 1,
+                    opacity: 0.7,
+                    color: '#2F4F4F', // Dark slate grey border
+                    dashArray: '3',
+                    fillOpacity: 0.8
+                }),
+                onEachFeature: (feature, layer) => {
+                    const regionName = feature.properties.name;
+
+                    // Wait until Airtable data is loaded before setting tooltips and colors
+                    if (dataLoaded) {
+                        const value = stateToValueMap[regionName] || 0;
+                        const color = getColor(value);
+
+                        // Debug: Log regionName and value to check if they are correct
+                        console.log(Region: ${regionName}, Count Value from Airtable: ${value});
+
+                        // Create a custom tooltip with a heading and colored value
+                        layer.bindTooltip(
+                            <div class="tooltip-heading">${regionName}</div>
+                             <div class="tooltip-value" style="color: ${color};">Value: ${value}</div>,
+                            { className: 'leaflet-tooltip' }
+                        );
+
+                        // Update the fill color of each region based on the value
+                        layer.setStyle({ fillColor: color });
+                    } else {
+                        // If data isn't loaded yet, set up a basic tooltip
+                        layer.bindTooltip(<div class="tooltip-heading">${regionName}</div>, {
+                            className: 'leaflet-tooltip'
+                        });
+                    }
+                }
+            }).addTo(map);
+
+            // Store the layer for updating colors later
+            window.geoJsonLayer = geoJsonLayer;
+        } catch (error) {
+            console.error("Error loading GeoJSON data:", error);
+        }
+    }
+
+    // Function to update the map colors based on the Airtable data
+    function updateMapColors() {
+        if (!window.geoJsonLayer) {
+            console.error("GeoJSON layer is not loaded yet.");
+            return;
+        }
+
+        // Iterate over each layer and update the fill color and tooltip based on the stateToValueMap
+        window.geoJsonLayer.eachLayer(layer => {
+            const regionName = layer.feature.properties.name;
+            const value = stateToValueMap[regionName];
+            const color = getColor(value);
+
+            if (value !== undefined) {
+                layer.setStyle({ fillColor: color });
+
+                // Update the tooltip with the value
+                layer.bindTooltip(
+                    <div class="tooltip-heading">${regionName}</div>
+                     <div class="tooltip-value" style="color: ${color};">Value: ${value}</div>,
+                    { className: 'leaflet-tooltip' }
+                );
+            } else {
+                console.warn(No value found for region: ${regionName});
+            }
         });
+    }
+
+    // Initialize Map with a dark-themed tile layer
+    const map = L.map('map').setView([37.8, -96], 4); // Centered over North America
+
+    // Using a dark-themed tile layer from CartoDB
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        maxZoom: 18,
+        attribution: '&copy; <a href="https://carto.com/">CartoDB</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    // Load the GeoJSON regions and fetch Airtable data
+    addRegions();
+    fetchAirtableData();
     </script>
+
+    <script src="script/particles.js"></script>
+  <script>
+    // Initialize particles.js
+    particlesJS.load('particles-js', 'script/particles.json', function() {
+        console.log('Particles.js configuration loaded');
+    });
+</script>
 </body>
 </html>
