@@ -218,7 +218,7 @@ async function updateCount(recordId, action) {
     try {
         // Fetch the current record to get the current count
         const fetchResponse = await fetch(`https://api.airtable.com/v0/${baseId}/${tableName}/${recordId}`, {
-            headers: { Authorization: `Bearer ${accessToken}` }
+            headers: { Authorization: `Bearer ${apiKey}` }
         });
         const record = await fetchResponse.json();
         const currentCount = record.fields.Count;
@@ -235,7 +235,7 @@ async function updateCount(recordId, action) {
         const updateResponse = await fetch(`https://api.airtable.com/v0/${baseId}/${tableName}/${recordId}`, {
             method: "PATCH",
             headers: {
-                Authorization: `Bearer ${accessToken}`,
+                Authorization: `Bearer ${apiKey}`,
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({ fields: { Count: newCount } })
