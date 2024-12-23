@@ -167,8 +167,13 @@ h1 {
     border: none;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+      background-color: #333;
+      color: white;
+      border-color: #555;
 }
-
+.search-container.ai-style-change-2 {
+    border-color: #555;
+}
 .tracker-container {
     display: flex;
     flex-direction: column;
