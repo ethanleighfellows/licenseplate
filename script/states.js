@@ -215,23 +215,24 @@ function displayStates(records) {
 
 // Function to update the count in Airtable using Record ID
 async function updateCount(recordId, action) {
+    console.log(`updateCount called for recordId: ${recordId}, action: ${action}`);
     try {
-        // Fetch the current record to get the current count
         const fetchResponse = await fetch(`https://api.airtable.com/v0/${baseId}/${tableName}/${recordId}`, {
             headers: { Authorization: `Bearer ${apiKey}` }
         });
         const record = await fetchResponse.json();
+        console.log("Fetched record:", record);
+
         const currentCount = record.fields.Count;
-
-        // Determine the new count based on the action
         let newCount = currentCount;
-        if (action === 'increment') {
-            newCount += 1; // Add 1 for increment
-        } else if (action === 'decrement') {
-            newCount -= 1; // Subtract 1 for decrement
-        }
 
-        // Update Airtable with the new count
+        if (action === 'increment') {
+            newCount += 1;
+        } else if (action === 'decrement') {
+            newCount -= 1;
+        }
+        console.log(`Current count: ${currentCount}, New count: ${newCount}`);
+
         const updateResponse = await fetch(`https://api.airtable.com/v0/${baseId}/${tableName}/${recordId}`, {
             method: "PATCH",
             headers: {
@@ -240,6 +241,15 @@ async function updateCount(recordId, action) {
             },
             body: JSON.stringify({ fields: { Count: newCount } })
         });
+        const updatedRecord = await updateResponse.json();
+        console.log("Updated record:", updatedRecord);
+
+        document.getElementById(`count-${recordId}`).textContent = updatedRecord.fields.Count;
+    } catch (error) {
+        console.error("Error in updateCount:", error);
+    }
+}
+
 
         // Update the DOM with the new count
         const updatedRecord = await updateResponse.json();
