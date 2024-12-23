@@ -3,8 +3,9 @@
 <head>
     <title>License Plate Tracker Map</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="style.css" /> <!-- Linking the existing style.css -->
     <style>
-        /* Dark mode styling for the map and body */
+        /* Additional inline styles, if needed */
         body {
             margin: 0;
             background-color: #121212;
@@ -37,44 +38,11 @@
             border-radius: 10px;
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
         }
-        .leaflet-tooltip {
-            background-color: #2F4F4F;
-            color: #ffffff;
-            font-weight: bold;
-            padding: 8px;
-            border-radius: 5px;
-            border: 1px solid #696969;
-        }
-        .tooltip-heading {
-            font-size: 16px;
-            margin-bottom: 4px;
-            color: #ffffff;
-        }
-        .tooltip-value {
-            font-size: 14px;
-        }
-        /* Back button styling */
-        .back-button {
-            margin-top: 10px;
-            padding: 10px 20px;
-            font-size: 16px;
-            font-weight: bold;
-            color: #ffffff;
-            background-color: #4a90e2;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            text-align: center;
-            transition: background-color 0.3s ease;
-        }
-        .back-button:hover {
-            background-color: #357ab7;
-        }
     </style>
 </head>
 <body>
     <h1>License Plate Tracker</h1>
-    <button class="back-button" onclick="window.location.href='index.html';">Back to Home</button>
+    <button class="nav-button" onclick="window.location.href='index.html';">Back to Home</button>
     <div id="particles-js"></div>
     <div id="map"></div>
 
