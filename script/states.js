@@ -213,28 +213,34 @@ function displayStates(records) {
 }
 
 // Function to update the count in Airtable using Record ID
-async function updateCount(recordId, adjustment) {
-    // Get the current count from the displayed label
-    const currentCount = parseInt(document.getElementById(`count-${recordId}`).textContent);
-    const newCount = currentCount + 1; // Adjust based on button clicked
-
+async function updateCount(recordId, action) {
     try {
+        // Get the current count from the displayed label
+        const countLabel = document.getElementById(`count-${recordId}`);
+        const currentCount = parseInt(countLabel.textContent, 10);
+
+        // Determine new count based on action
+        const newCount = action === 'increment' ? currentCount + 1 : currentCount - 1;
+
+        // Update Airtable with the new count
         const response = await fetch(`https://api.airtable.com/v0/${baseId}/${tableName}/${recordId}`, {
-            method: 'PATCH',
+            method: "PATCH",
             headers: {
                 Authorization: `Bearer ${apiKey}`,
-                'Content-Type': 'application/json'
+                "Content-Type": "application/json",
             },
-            body: JSON.stringify({ fields: { Count: newCount } })
+            body: JSON.stringify({ fields: { Count: newCount } }),
         });
+
         const data = await response.json();
-        
-        // Update the displayed count
-        document.getElementById(`count-${recordId}`).textContent = data.fields.Count;
+
+        // Update the DOM with the new count
+        countLabel.textContent = data.fields.Count;
     } catch (error) {
         console.error("Error updating count in Airtable:", error);
     }
 }
+
 
 // Search functionality
 searchInput.addEventListener('input', (event) => {
