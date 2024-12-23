@@ -40,7 +40,7 @@ app.post('/update-count', async (req, res) => {
 
         // Update the count for the specified region
         if (data.hasOwnProperty(state)) {
-            data[state] += value; // Increment or decrement
+            data[state] = (data[state] || 0) + value; // Ensure numeric addition or subtraction
             await writeData(data); // Write updated data to the JSON file
             res.json({ newCount: data[state] });
         } else {
