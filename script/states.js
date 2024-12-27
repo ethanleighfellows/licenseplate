@@ -52,7 +52,7 @@ const statesByCountry = {
     { name: "Texas", image: "assets/plates/texas.png" },
     { name: "Utah", image: "assets/plates/utah.png" },
     { name: "Vermont", image: "assets/plates/vermont.png" },
-    { name: "U.S. Federal Government", image: "assets/plates/usgov.png" },
+    { name: "US Federal Government", image: "assets/plates/usfederal.png" },
     { name: "Diplomatic Plate", image: "assets/plates/diplo.png" },
     { name: "Virginia", image: "assets/plates/virginia.png" },
     { name: "Washington", image: "assets/plates/washington.png" },
