@@ -176,15 +176,39 @@ async function displayCarousel() {
 
     let currentIndex = 0;
 
-    imageFiles.forEach((file, index) => {
+    for (const [index, file] of imageFiles.entries()) {
         const slide = document.createElement('div');
         slide.className = 'carousel-slide';
 
         const img = document.createElement('img');
         img.src = file.download_url;
         img.alt = file.name;
+        img.style.maxWidth = '80%';
+        img.style.margin = 'auto';
+        img.style.display = 'block';
+
+        const metadataPath = `assets/gallery/meta/${file.name}.meta.json`;
+        const metadataResponse = await fetch(`https://api.github.com/repos/${USERNAME}/${REPO_NAME}/contents/${metadataPath}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        });
+
+        const caption = document.createElement('p');
+        caption.style.textAlign = 'center';
+        caption.style.fontSize = '14px';
+        caption.style.color = '#333';
+
+        if (metadataResponse.ok) {
+            const metadataFile = await metadataResponse.json();
+            const metadata = JSON.parse(atob(metadataFile.content));
+            caption.textContent = `State: ${metadata.state}, Date: ${metadata.date}`;
+        } else {
+            caption.textContent = 'Metadata not available';
+        }
 
         slide.appendChild(img);
+        slide.appendChild(caption);
         carouselTrack.appendChild(slide);
 
         const indicator = document.createElement('div');
@@ -192,7 +216,7 @@ async function displayCarousel() {
         if (index === 0) indicator.classList.add('active');
         indicator.dataset.index = index;
         indicatorsContainer.appendChild(indicator);
-    });
+    }
 
     const slides = Array.from(carouselTrack.children);
     const indicators = Array.from(indicatorsContainer.children);
