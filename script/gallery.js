@@ -286,9 +286,47 @@ async function initializeGallery() {
     await populateStateSelector();
 
     const form = document.getElementById('uploadForm');
+    const stateSelector = document.getElementById('stateSelector');
+    let diplomaticInput = document.getElementById('diplomaticInput');
+
+    // If the input box doesn't exist, create it
+    if (!diplomaticInput) {
+        diplomaticInput = createDiplomaticInput();
+        form.appendChild(diplomaticInput);
+    }
+
+    // Show or hide the input box based on selection
+    stateSelector.addEventListener('change', () => {
+        if (stateSelector.value === 'Diplomatic Plate') {
+            diplomaticInput.style.display = 'block'; // Show the input
+        } else {
+            diplomaticInput.style.display = 'none'; // Hide the input
+            diplomaticInput.value = ''; // Clear any entered value
+        }
+    });
+
     form.addEventListener('submit', handleImageUpload);
 
     displayCarousel();
 }
+
+function createDiplomaticInput() {
+    const diplomaticInput = document.createElement('input');
+    diplomaticInput.type = 'text';
+    diplomaticInput.id = 'diplomaticInput';
+    diplomaticInput.placeholder = 'Enter country name';
+    diplomaticInput.style.padding = '10px';
+    diplomaticInput.style.backgroundColor = '#2a2a2a';
+    diplomaticInput.style.color = '#ffffff';
+    diplomaticInput.style.border = '1px solid #444';
+    diplomaticInput.style.borderRadius = '5px';
+    diplomaticInput.style.marginTop = '10px';
+    diplomaticInput.style.width = '100%';
+    diplomaticInput.style.maxWidth = '300px';
+    diplomaticInput.style.display = 'none'; // Hidden by default
+
+    return diplomaticInput;
+}
+
 
 document.addEventListener('DOMContentLoaded', initializeGallery);
