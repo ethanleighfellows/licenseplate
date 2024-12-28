@@ -51,7 +51,7 @@ async function populateStateSelector() {
 }
 
 async function uploadToGitHub(file, stateName) {
-    const filePath = `uploads/${file.name}`;
+    const filePath = `assets/gallery/${file.name}`;
     const base64Content = await fileToBase64(file);
 
     const url = `https://api.github.com/repos/${USERNAME}/${REPO_NAME}/contents/${filePath}`;
