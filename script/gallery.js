@@ -120,6 +120,7 @@ async function uploadToGitHub(file, stateName, dateCaptured, diplomaticInfo) {
         alert(`Failed to upload ${file.name}.`);
         return;
     }
+
     const metadataPath = `assets/gallery/meta/${file.name}.meta.json`;
     await fetch(`https://api.github.com/repos/${USERNAME}/${REPO_NAME}/contents/${metadataPath}`, {
         method: 'PUT',
