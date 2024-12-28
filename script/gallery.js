@@ -1,4 +1,15 @@
-// Fetch states or provinces from the states.js file
+// Import states and provinces data from states.js
+// Example formatting in states.js:
+// const statesByCountry = {
+//   '🇺🇸 United States 🇺🇸': [
+//     { name: "Alabama", image: "assets/plates/alabama.png" },
+
+// Hardcoded GitHub credentials and repo details
+const GITHUB_TOKEN = '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';
+const REPO_NAME = 'licenseplate';
+const USERNAME = 'ethanleighfellows';
+const BRANCH = 'main';
+
 async function fetchStatesByCountry() {
     const response = await fetch('script/states.js');
     const scriptText = await response.text();
@@ -39,27 +50,62 @@ async function populateStateSelector() {
     }
 }
 
+async function uploadToGitHub(file, stateName) {
+    const filePath = `uploads/${file.name}`;
+    const base64Content = await fileToBase64(file);
+
+    const url = `https://api.github.com/repos/${USERNAME}/${REPO_NAME}/contents/${filePath}`;
+    const response = await fetch(url, {
+        method: 'PUT',
+        headers: {
+            'Authorization': `Bearer ${GITHUB_TOKEN}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            message: `Upload ${file.name} for state ${stateName}`,
+            content: base64Content,
+            branch: BRANCH,
+        }),
+    });
+
+    if (response.ok) {
+        alert(`Successfully uploaded ${file.name} for ${stateName}.`);
+    } else {
+        const error = await response.json();
+        console.error('Error uploading file:', error);
+        alert(`Failed to upload ${file.name}.`);
+    }
+}
+
+function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result.split(',')[1]); // Remove `data:` prefix
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+    });
+}
+
 // Handle image upload
 async function handleImageUpload(event) {
     event.preventDefault();
     const imageInput = document.getElementById('imageInput');
     const stateSelector = document.getElementById('stateSelector');
 
-    const formData = new FormData();
-    formData.append('image', imageInput.files[0]);
-    formData.append('state', stateSelector.value);
+    const file = imageInput.files[0];
+    const stateName = stateSelector.value;
 
-    const response = await fetch('/upload', {
-        method: 'POST',
-        body: formData,
-    });
-
-    if (response.ok) {
-        alert('Image uploaded successfully!');
-        displayImages();
-    } else {
-        alert('Error uploading image.');
+    if (!file) {
+        alert('Please select an image.');
+        return;
     }
+
+    if (!stateName) {
+        alert('Please select a state or province.');
+        return;
+    }
+
+    await uploadToGitHub(file, stateName);
 }
 
 // Display uploaded images
