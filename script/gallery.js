@@ -88,10 +88,11 @@ async function uploadToGitHub(file, stateName, dateCaptured, diplomaticInfo) {
     const token = await getGithubToken();
     if (!token) return;
 
+    const finalState = stateName === 'Diplomatic Plate' && diplomaticInfo ? `Diplomatic Plate: ${diplomaticInfo}` : stateName;
+
     const metadata = {
-        state: stateName,
-        date: dateCaptured,
-        diplomaticInfo: diplomaticInfo ? `Diplomatic Plate: ${diplomaticInfo}` : undefined
+        state: finalState,
+        date: dateCaptured
     };
     const metadataContent = btoa(JSON.stringify(metadata));
 
@@ -106,7 +107,7 @@ async function uploadToGitHub(file, stateName, dateCaptured, diplomaticInfo) {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            message: `Upload ${file.name} for state ${stateName}`,
+            message: `Upload ${file.name} for state ${finalState}`,
             content: base64Content,
             branch: BRANCH,
         }),
