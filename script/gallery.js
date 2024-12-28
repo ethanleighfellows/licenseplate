@@ -174,20 +174,18 @@ async function displayImages() {
     const files = await response.json();
     const imageFiles = files.filter(file => file.type === 'file' && file.name.match(/\.(png|jpe?g|gif)$/i));
 
-    const carousel = document.createElement('div');
-    carousel.className = 'carousel';
+    const photoswipeItems = [];
 
-    const track = document.createElement('div');
-    track.className = 'carousel-track';
-    carousel.appendChild(track);
-
-    imageFiles.forEach(file => {
+    imageFiles.forEach((file, index) => {
         const imgContainer = document.createElement('div');
-        imgContainer.className = 'carousel-item';
+        imgContainer.className = 'gallery-item';
 
         const img = document.createElement('img');
         img.src = file.download_url;
         img.alt = file.name;
+        img.setAttribute('data-pswp-width', '1200'); // Default width, adjust dynamically if needed
+        img.setAttribute('data-pswp-height', '800'); // Default height, adjust dynamically if needed
+        img.setAttribute('data-index', index);
 
         const metadataPath = `assets/gallery/meta/${file.name}.meta.json`;
 
@@ -208,80 +206,33 @@ async function displayImages() {
         });
 
         imgContainer.appendChild(img);
-        track.appendChild(imgContainer);
+        gallery.appendChild(imgContainer);
 
-        img.addEventListener('click', () => openFullscreen(img.src));
+        photoswipeItems.push({
+            src: file.download_url,
+            w: 1200, // Default width, adjust dynamically if needed
+            h: 800, // Default height, adjust dynamically if needed
+            title: `State: ${metadataPath.state || ''}, Date: ${metadataPath.date || ''}`
+        });
     });
 
-    const prevButton = document.createElement('button');
-    prevButton.className = 'carousel-button prev';
-    prevButton.textContent = '<';
-    carousel.appendChild(prevButton);
-
-    const nextButton = document.createElement('button');
-    nextButton.className = 'carousel-button next';
-    nextButton.textContent = '>';
-    carousel.appendChild(nextButton);
-
-    gallery.appendChild(carousel);
-
-    initializeCarousel(track, prevButton, nextButton);
+    initializePhotoSwipe(photoswipeItems);
 }
 
-function initializeCarousel(track, prevButton, nextButton) {
-    const items = Array.from(track.children);
-    const itemWidth = items[0].getBoundingClientRect().width;
+function initializePhotoSwipe(items) {
+    const pswpElement = document.querySelectorAll('.pswp')[0];
+    const galleryItems = document.querySelectorAll('.gallery-item img');
 
-    items.forEach((item, index) => {
-        item.style.left = `${itemWidth * index}px`;
+    galleryItems.forEach((img, index) => {
+        img.addEventListener('click', () => {
+            const gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                index: index,
+                bgOpacity: 0.8,
+                showHideOpacity: true
+            });
+            gallery.init();
+        });
     });
-
-    let currentIndex = 0;
-
-    function moveToSlide(index) {
-        track.style.transform = `translateX(-${itemWidth * index}px)`;
-        currentIndex = index;
-    }
-
-    prevButton.addEventListener('click', () => {
-        const nextIndex = Math.max(currentIndex - 1, 0);
-        moveToSlide(nextIndex);
-    });
-
-    nextButton.addEventListener('click', () => {
-        const nextIndex = Math.min(currentIndex + 1, items.length - 1);
-        moveToSlide(nextIndex);
-    });
-
-    moveToSlide(currentIndex);
-}
-
-function openFullscreen(imageSrc) {
-    const overlay = document.createElement('div');
-    overlay.id = 'fullscreen-overlay';
-    overlay.style.position = 'fixed';
-    overlay.style.top = '0';
-    overlay.style.left = '0';
-    overlay.style.width = '100%';
-    overlay.style.height = '100%';
-    overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
-    overlay.style.display = 'flex';
-    overlay.style.justifyContent = 'center';
-    overlay.style.alignItems = 'center';
-    overlay.style.zIndex = '1000';
-
-    const img = document.createElement('img');
-    img.src = imageSrc;
-    img.style.maxWidth = '90%';
-    img.style.maxHeight = '90%';
-    img.style.border = '5px solid white';
-    overlay.appendChild(img);
-
-    overlay.addEventListener('click', () => {
-        document.body.removeChild(overlay);
-    });
-
-    document.body.appendChild(overlay);
 }
 
 // Initialize the gallery
