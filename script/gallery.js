@@ -174,14 +174,20 @@ async function displayImages() {
     const files = await response.json();
     const imageFiles = files.filter(file => file.type === 'file' && file.name.match(/\.(png|jpe?g|gif)$/i));
 
+    const carousel = document.createElement('div');
+    carousel.className = 'carousel';
+
+    const track = document.createElement('div');
+    track.className = 'carousel-track';
+    carousel.appendChild(track);
+
     imageFiles.forEach(file => {
         const imgContainer = document.createElement('div');
-        imgContainer.className = 'image-container';
+        imgContainer.className = 'carousel-item';
 
         const img = document.createElement('img');
         img.src = file.download_url;
         img.alt = file.name;
-        img.classList.add('clickable-image');
 
         const metadataPath = `assets/gallery/meta/${file.name}.meta.json`;
 
@@ -202,10 +208,52 @@ async function displayImages() {
         });
 
         imgContainer.appendChild(img);
-        gallery.appendChild(imgContainer);
+        track.appendChild(imgContainer);
 
         img.addEventListener('click', () => openFullscreen(img.src));
     });
+
+    const prevButton = document.createElement('button');
+    prevButton.className = 'carousel-button prev';
+    prevButton.textContent = '<';
+    carousel.appendChild(prevButton);
+
+    const nextButton = document.createElement('button');
+    nextButton.className = 'carousel-button next';
+    nextButton.textContent = '>';
+    carousel.appendChild(nextButton);
+
+    gallery.appendChild(carousel);
+
+    initializeCarousel(track, prevButton, nextButton);
+}
+
+function initializeCarousel(track, prevButton, nextButton) {
+    const items = Array.from(track.children);
+    const itemWidth = items[0].getBoundingClientRect().width;
+
+    items.forEach((item, index) => {
+        item.style.left = `${itemWidth * index}px`;
+    });
+
+    let currentIndex = 0;
+
+    function moveToSlide(index) {
+        track.style.transform = `translateX(-${itemWidth * index}px)`;
+        currentIndex = index;
+    }
+
+    prevButton.addEventListener('click', () => {
+        const nextIndex = Math.max(currentIndex - 1, 0);
+        moveToSlide(nextIndex);
+    });
+
+    nextButton.addEventListener('click', () => {
+        const nextIndex = Math.min(currentIndex + 1, items.length - 1);
+        moveToSlide(nextIndex);
+    });
+
+    moveToSlide(currentIndex);
 }
 
 function openFullscreen(imageSrc) {
