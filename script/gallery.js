@@ -1,22 +1,4 @@
 // Fetch states or provinces from the states.js file
-async function fetchStates() {
-    const response = await fetch('script/states.js');
-    const states = await response.json();
-    return states;
-}
-
-// Initialize the gallery
-async function initializeGallery() {
-    const states = await fetchStates();
-    populateStateSelector(states);
-
-    const form = document.getElementById('uploadForm');
-    form.addEventListener('submit', handleImageUpload);
-
-    displayImages();
-}
-
-
 async function fetchStatesByCountry() {
     const response = await fetch('script/states.js');
     const scriptText = await response.text();
@@ -32,6 +14,7 @@ async function fetchStatesByCountry() {
     return statesByCountry;
 }
 
+// Populate the state/province dropdown
 async function populateStateSelector() {
     try {
         const statesByCountry = await fetchStatesByCountry();
@@ -39,27 +22,24 @@ async function populateStateSelector() {
 
         // Iterate through each country and its states/provinces
         Object.keys(statesByCountry).forEach(country => {
+            const optgroup = document.createElement('optgroup');
+            optgroup.label = country;
+
             statesByCountry[country].forEach(state => {
                 const option = document.createElement('option');
                 option.value = state.name;
                 option.textContent = state.name;
-                stateSelector.appendChild(option);
+                optgroup.appendChild(option);
             });
+
+            stateSelector.appendChild(optgroup);
         });
     } catch (error) {
         console.error('Error populating state selector:', error);
     }
 }
 
-async function initializeGallery() {
-    await populateStateSelector();
-
-    const form = document.getElementById('uploadForm');
-    form.addEventListener('submit', handleImageUpload);
-
-    displayImages();
-}
-
+// Handle image upload
 async function handleImageUpload(event) {
     event.preventDefault();
     const imageInput = document.getElementById('imageInput');
@@ -71,7 +51,7 @@ async function handleImageUpload(event) {
 
     const response = await fetch('/upload', {
         method: 'POST',
-        body: formData
+        body: formData,
     });
 
     if (response.ok) {
@@ -82,9 +62,10 @@ async function handleImageUpload(event) {
     }
 }
 
+// Display uploaded images
 async function displayImages() {
     const gallery = document.getElementById('gallery');
-    gallery.innerHTML = '';
+    gallery.innerHTML = ''; // Clear existing images
 
     const response = await fetch('/get-images');
     const images = await response.json();
@@ -107,62 +88,14 @@ async function displayImages() {
     });
 }
 
-document.addEventListener('DOMContentLoaded', initializeGallery);
+// Initialize the gallery
+async function initializeGallery() {
+    await populateStateSelector();
 
-// Populate the state/province dropdown
-function populateStateSelector(states) {
-    const stateSelector = document.getElementById('stateSelector');
-    states.forEach(state => {
-        const option = document.createElement('option');
-        option.value = state.code;
-        option.textContent = state.name;
-        stateSelector.appendChild(option);
-    });
+    const form = document.getElementById('uploadForm');
+    form.addEventListener('submit', handleImageUpload);
+
+    displayImages();
 }
 
-// Handle image upload
-async function handleImageUpload(event) {
-    event.preventDefault();
-    const formData = new FormData(event.target);
-
-    const response = await fetch('/upload', { // Update this to match your backend upload URL
-        method: 'POST',
-        body: formData
-    });
-
-    if (response.ok) {
-        alert('Image uploaded successfully!');
-        displayImages(); // Refresh gallery
-    } else {
-        alert('Error uploading image.');
-    }
-}
-
-// Display uploaded images
-async function displayImages() {
-    const gallery = document.getElementById('gallery');
-    gallery.innerHTML = ''; // Clear existing images
-
-    const response = await fetch('/get-images'); // Update this to match your backend API
-    const images = await response.json();
-
-    images.forEach(image => {
-        const imgContainer = document.createElement('div');
-        imgContainer.className = 'image-container';
-
-        const img = document.createElement('img');
-        img.src = `assets/gallery/${image.filename}`;
-        img.alt = image.tag;
-
-        const tag = document.createElement('p');
-        tag.textContent = image.tag;
-
-        imgContainer.appendChild(img);
-        imgContainer.appendChild(tag);
-
-        gallery.appendChild(imgContainer);
-    });
-}
-
-// Initialize the gallery script on page load
 document.addEventListener('DOMContentLoaded', initializeGallery);
