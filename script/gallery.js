@@ -1,6 +1,6 @@
 
 // Hardcoded GitHub credentials and repo details
-const GITHUB_TOKEN = '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';
+const GITHUB_TOKEN = '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';
 const REPO_NAME = 'licenseplate';
 const USERNAME = 'ethanleighfellows';
 const BRANCH = 'main';
