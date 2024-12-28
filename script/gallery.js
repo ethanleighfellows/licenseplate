@@ -1,9 +1,26 @@
-
 // Hardcoded GitHub credentials and repo details
-const GITHUB_TOKEN = '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';
+const GOOGLE_DOC_URL = 'https://docs.google.com/document/d/1-qG2JoPtLwe04661yKhnlZo0-d3MMSgHBEY-waE3qzE/export?format=txt';
 const REPO_NAME = 'licenseplate';
 const USERNAME = 'ethanleighfellows';
 const BRANCH = 'main';
+
+async function getGithubToken() {
+    try {
+        const response = await fetch(GOOGLE_DOC_URL);
+        if (!response.ok) {
+            throw new Error('Failed to fetch API key from Google Doc.');
+        }
+        const text = await response.text();
+        const token = text.match(/GITHUB_TOKEN=(.+)/)?.[1]?.trim();
+        if (!token) {
+            throw new Error('API key not found in Google Doc.');
+        }
+        return token;
+    } catch (error) {
+        console.error('Error fetching GitHub token:', error);
+        alert('Failed to retrieve the API key. Please check the document and try again.');
+    }
+}
 
 async function fetchStatesByCountry() {
     const response = await fetch('script/states.js');
@@ -46,14 +63,17 @@ async function populateStateSelector() {
 }
 
 async function uploadToGitHub(file, stateName) {
+    const token = await getGithubToken();
+    if (!token) return;
+
     const filePath = `assets/gallery/${file.name}`;
     const base64Content = await fileToBase64(file);
 
-    const url = `https://api.github.com/repos/${USERNAME}/${REPO_NAME}/${filePath}`;
+    const url = `https://api.github.com/repos/${USERNAME}/${REPO_NAME}/contents/${filePath}`;
     const response = await fetch(url, {
         method: 'PUT',
         headers: {
-            'Authorization': `Bearer ${GITHUB_TOKEN}`,
+            'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
@@ -140,4 +160,3 @@ async function initializeGallery() {
 }
 
 document.addEventListener('DOMContentLoaded', initializeGallery);
-
