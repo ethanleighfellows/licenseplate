@@ -1,4 +1,3 @@
-// Hardcoded GitHub credentials and repo details
 const GOOGLE_DOC_URL = 'https://docs.google.com/document/d/1-qG2JoPtLwe04661yKhnlZo0-d3MMSgHBEY-waE3qzE/export?format=txt';
 const REPO_NAME = 'licenseplate';
 const USERNAME = 'ethanleighfellows';
@@ -37,7 +36,6 @@ async function fetchStatesByCountry() {
     return statesByCountry;
 }
 
-// Populate the state/province dropdown
 async function populateStateSelector() {
     try {
         const statesByCountry = await fetchStatesByCountry();
@@ -96,7 +94,6 @@ async function uploadToGitHub(file, stateName, dateCaptured) {
         return;
     }
 
-    // Upload metadata to a separate folder
     const metadataPath = `assets/gallery/meta/${file.name}.meta.json`;
     await fetch(`https://api.github.com/repos/${USERNAME}/${REPO_NAME}/contents/${metadataPath}`, {
         method: 'PUT',
@@ -123,7 +120,6 @@ function fileToBase64(file) {
     });
 }
 
-// Handle image upload
 async function handleImageUpload(event) {
     event.preventDefault();
     const imageInput = document.getElementById('imageInput');
@@ -148,13 +144,17 @@ async function handleImageUpload(event) {
     }
 
     await uploadToGitHub(file, stateName, dateCaptured);
-    displayImages(); // Refresh gallery after upload
+    displayCarousel(); // Refresh gallery after upload
 }
 
-// Display uploaded images
-async function displayImages() {
-    const gallery = document.getElementById('gallery');
-    gallery.innerHTML = ''; // Clear existing images
+async function displayCarousel() {
+    const carouselTrack = document.querySelector('.carousel-track');
+    const indicatorsContainer = document.querySelector('.carousel-indicators');
+    const prevButton = document.querySelector('.carousel-arrow.prev');
+    const nextButton = document.querySelector('.carousel-arrow.next');
+
+    carouselTrack.innerHTML = '';
+    indicatorsContainer.innerHTML = '';
 
     const token = await getGithubToken();
     if (!token) return;
@@ -174,75 +174,63 @@ async function displayImages() {
     const files = await response.json();
     const imageFiles = files.filter(file => file.type === 'file' && file.name.match(/\.(png|jpe?g|gif)$/i));
 
-    const photoswipeItems = [];
+    let currentIndex = 0;
 
     imageFiles.forEach((file, index) => {
-        const imgContainer = document.createElement('div');
-        imgContainer.className = 'gallery-item';
+        const slide = document.createElement('div');
+        slide.className = 'carousel-slide';
 
         const img = document.createElement('img');
         img.src = file.download_url;
         img.alt = file.name;
-        img.setAttribute('data-pswp-width', '1200'); // Default width, adjust dynamically if needed
-        img.setAttribute('data-pswp-height', '800'); // Default height, adjust dynamically if needed
-        img.setAttribute('data-index', index);
 
-        const metadataPath = `assets/gallery/meta/${file.name}.meta.json`;
+        slide.appendChild(img);
+        carouselTrack.appendChild(slide);
 
-        fetch(`https://api.github.com/repos/${USERNAME}/${REPO_NAME}/contents/${metadataPath}`, {
-            headers: {
-                'Authorization': `Bearer ${token}`,
-            },
-        }).then(metaResponse => {
-            if (!metaResponse.ok) return null;
-            return metaResponse.json();
-        }).then(metaFile => {
-            if (metaFile) {
-                const metadata = JSON.parse(atob(metaFile.content));
-                const caption = document.createElement('p');
-                caption.textContent = `State: ${metadata.state}, Date: ${metadata.date}`;
-                imgContainer.appendChild(caption);
-            }
-        });
-
-        imgContainer.appendChild(img);
-        gallery.appendChild(imgContainer);
-
-        photoswipeItems.push({
-            src: file.download_url,
-            w: 1200, // Default width, adjust dynamically if needed
-            h: 800, // Default height, adjust dynamically if needed
-            title: `State: ${metadataPath.state || ''}, Date: ${metadataPath.date || ''}`
-        });
+        const indicator = document.createElement('div');
+        indicator.className = 'carousel-indicator';
+        if (index === 0) indicator.classList.add('active');
+        indicator.dataset.index = index;
+        indicatorsContainer.appendChild(indicator);
     });
 
-    initializePhotoSwipe(photoswipeItems);
-}
+    const slides = Array.from(carouselTrack.children);
+    const indicators = Array.from(indicatorsContainer.children);
 
-function initializePhotoSwipe(items) {
-    const pswpElement = document.querySelectorAll('.pswp')[0];
-    const galleryItems = document.querySelectorAll('.gallery-item img');
+    function updateCarousel(index) {
+        const slideWidth = slides[0].getBoundingClientRect().width;
+        carouselTrack.style.transform = `translateX(-${slideWidth * index}px)`;
+        indicators.forEach(ind => ind.classList.remove('active'));
+        indicators[index].classList.add('active');
+        currentIndex = index;
+    }
 
-    galleryItems.forEach((img, index) => {
-        img.addEventListener('click', () => {
-            const gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
-                index: index,
-                bgOpacity: 0.8,
-                showHideOpacity: true
-            });
-            gallery.init();
-        });
+    prevButton.addEventListener('click', () => {
+        const nextIndex = (currentIndex === 0) ? slides.length - 1 : currentIndex - 1;
+        updateCarousel(nextIndex);
     });
+
+    nextButton.addEventListener('click', () => {
+        const nextIndex = (currentIndex === slides.length - 1) ? 0 : currentIndex + 1;
+        updateCarousel(nextIndex);
+    });
+
+    indicatorsContainer.addEventListener('click', (e) => {
+        if (e.target.classList.contains('carousel-indicator')) {
+            updateCarousel(Number(e.target.dataset.index));
+        }
+    });
+
+    updateCarousel(currentIndex);
 }
 
-// Initialize the gallery
 async function initializeGallery() {
     await populateStateSelector();
 
     const form = document.getElementById('uploadForm');
     form.addEventListener('submit', handleImageUpload);
 
-    displayImages();
+    displayCarousel();
 }
 
 document.addEventListener('DOMContentLoaded', initializeGallery);
