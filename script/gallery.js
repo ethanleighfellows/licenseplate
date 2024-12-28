@@ -62,9 +62,15 @@ async function populateStateSelector() {
     }
 }
 
-async function uploadToGitHub(file, stateName) {
+async function uploadToGitHub(file, stateName, dateCaptured) {
     const token = await getGithubToken();
     if (!token) return;
+
+    const metadata = {
+        state: stateName,
+        date: dateCaptured
+    };
+    const metadataContent = btoa(JSON.stringify(metadata));
 
     const filePath = `assets/gallery/${file.name}`;
     const base64Content = await fileToBase64(file);
@@ -83,13 +89,29 @@ async function uploadToGitHub(file, stateName) {
         }),
     });
 
-    if (response.ok) {
-        alert(`Successfully uploaded ${file.name} for ${stateName}.`);
-    } else {
+    if (!response.ok) {
         const error = await response.json();
         console.error('Error uploading file:', error);
         alert(`Failed to upload ${file.name}.`);
+        return;
     }
+
+    // Upload metadata
+    const metadataPath = `assets/gallery/${file.name}.meta.json`;
+    await fetch(`https://api.github.com/repos/${USERNAME}/${REPO_NAME}/contents/${metadataPath}`, {
+        method: 'PUT',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            message: `Upload metadata for ${file.name}`,
+            content: metadataContent,
+            branch: BRANCH,
+        }),
+    });
+
+    alert(`Successfully uploaded ${file.name} with metadata.`);
 }
 
 function fileToBase64(file) {
@@ -106,6 +128,7 @@ async function handleImageUpload(event) {
     event.preventDefault();
     const imageInput = document.getElementById('imageInput');
     const stateSelector = document.getElementById('stateSelector');
+    const dateCaptured = new Date().toLocaleDateString();
 
     const file = imageInput.files[0];
     const stateName = stateSelector.value;
@@ -120,7 +143,7 @@ async function handleImageUpload(event) {
         return;
     }
 
-    await uploadToGitHub(file, stateName);
+    await uploadToGitHub(file, stateName, dateCaptured);
     displayImages(); // Refresh gallery after upload
 }
 
@@ -147,21 +170,66 @@ async function displayImages() {
     const files = await response.json();
     const imageFiles = files.filter(file => file.type === 'file' && file.name.match(/\.(png|jpe?g|gif)$/i));
 
+    const carousel = document.createElement('div');
+    carousel.className = 'carousel';
+
     imageFiles.forEach(file => {
         const imgContainer = document.createElement('div');
-        imgContainer.className = 'image-container';
+        imgContainer.className = 'carousel-item';
 
         const img = document.createElement('img');
         img.src = file.download_url;
         img.alt = file.name;
 
-        const caption = document.createElement('p');
-        caption.textContent = file.name;
+        const metadataPath = `assets/gallery/${file.name}.meta.json`;
+
+        fetch(`https://api.github.com/repos/${USERNAME}/${REPO_NAME}/contents/${metadataPath}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        }).then(metaResponse => {
+            if (!metaResponse.ok) return null;
+            return metaResponse.json();
+        }).then(metaFile => {
+            if (metaFile) {
+                const metadata = JSON.parse(atob(metaFile.content));
+                const caption = document.createElement('p');
+                caption.textContent = `State: ${metadata.state}, Date: ${metadata.date}`;
+                imgContainer.appendChild(caption);
+            }
+        });
 
         imgContainer.appendChild(img);
-        imgContainer.appendChild(caption);
+        carousel.appendChild(imgContainer);
+    });
 
-        gallery.appendChild(imgContainer);
+    gallery.appendChild(carousel);
+
+    // Initialize carousel functionality
+    initializeCarousel();
+}
+
+function initializeCarousel() {
+    const carousel = document.querySelector('.carousel');
+    let currentIndex = 0;
+
+    function showSlide(index) {
+        const items = document.querySelectorAll('.carousel-item');
+        items.forEach((item, i) => {
+            item.style.display = i === index ? 'block' : 'none';
+        });
+    }
+
+    showSlide(currentIndex);
+
+    document.addEventListener('keydown', event => {
+        const items = document.querySelectorAll('.carousel-item');
+        if (event.key === 'ArrowRight') {
+            currentIndex = (currentIndex + 1) % items.length;
+        } else if (event.key === 'ArrowLeft') {
+            currentIndex = (currentIndex - 1 + items.length) % items.length;
+        }
+        showSlide(currentIndex);
     });
 }
 
