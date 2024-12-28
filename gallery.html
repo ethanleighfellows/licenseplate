@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Gallery</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script/gallery.js" defer></script>
+    <style>
+        /* Gallery specific styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .upload-form {
+            margin: 20px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .upload-form input,
+        .upload-form select {
+            margin: 10px;
+            padding: 10px;
+            width: 80%;
+            max-width: 400px;
+        }
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+            padding: 10px;
+        }
+        .gallery img {
+            width: 100%;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Image Gallery</h1>
+        
+        <form class="upload-form" id="uploadForm">
+            <input type="file" id="imageInput" accept="image/*" required />
+            <select id="stateSelector" required>
+                <option value="" disabled selected>Select a state or province</option>
+                <!-- Options dynamically populated by JS -->
+            </select>
+            <button type="submit">Upload</button>
+        </form>
+
+        <div class="gallery" id="gallery">
+            <!-- Images dynamically loaded here -->
+        </div>
+    </div>
+</body>
+</html>
