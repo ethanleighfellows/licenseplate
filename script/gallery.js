@@ -66,6 +66,7 @@ async function populateStateSelector() {
     }
 }
 
+
 function createDiplomaticInput() {
     const diplomaticInput = document.createElement('input');
     diplomaticInput.type = 'text';
