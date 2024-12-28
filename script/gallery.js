@@ -121,6 +121,7 @@ async function handleImageUpload(event) {
     }
 
     await uploadToGitHub(file, stateName);
+    displayImages(); // Refresh gallery after upload
 }
 
 // Display uploaded images
@@ -128,19 +129,34 @@ async function displayImages() {
     const gallery = document.getElementById('gallery');
     gallery.innerHTML = ''; // Clear existing images
 
-    const response = await fetch('/get-images');
-    const images = await response.json();
+    const token = await getGithubToken();
+    if (!token) return;
 
-    images.forEach(image => {
+    const url = `https://api.github.com/repos/${USERNAME}/${REPO_NAME}/contents/assets/gallery`;
+    const response = await fetch(url, {
+        headers: {
+            'Authorization': `Bearer ${token}`,
+        },
+    });
+
+    if (!response.ok) {
+        console.error('Error fetching images:', await response.text());
+        return;
+    }
+
+    const files = await response.json();
+    const imageFiles = files.filter(file => file.type === 'file' && file.name.match(/\.(png|jpe?g|gif)$/i));
+
+    imageFiles.forEach(file => {
         const imgContainer = document.createElement('div');
         imgContainer.className = 'image-container';
 
         const img = document.createElement('img');
-        img.src = `assets/gallery/${image.filename}`;
-        img.alt = image.state;
+        img.src = file.download_url;
+        img.alt = file.name;
 
         const caption = document.createElement('p');
-        caption.textContent = image.state;
+        caption.textContent = file.name;
 
         imgContainer.appendChild(img);
         imgContainer.appendChild(caption);
