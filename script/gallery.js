@@ -1,3 +1,4 @@
+// Hardcoded GitHub credentials and repo details
 const GOOGLE_DOC_URL = 'https://docs.google.com/document/d/1-qG2JoPtLwe04661yKhnlZo0-d3MMSgHBEY-waE3qzE/export?format=txt';
 const REPO_NAME = 'licenseplate';
 const USERNAME = 'ethanleighfellows';
@@ -150,13 +151,11 @@ async function handleImageUpload(event) {
 async function displayCarousel() {
     const carouselTrack = document.querySelector('.carousel-track');
     const indicatorsContainer = document.querySelector('.carousel-indicators');
-    const metadataDisplay = document.querySelector('.metadata-display');
     const prevButton = document.querySelector('.carousel-arrow.prev');
     const nextButton = document.querySelector('.carousel-arrow.next');
 
     carouselTrack.innerHTML = '';
     indicatorsContainer.innerHTML = '';
-    metadataDisplay.textContent = '';
 
     const token = await getGithubToken();
     if (!token) return;
@@ -181,6 +180,7 @@ async function displayCarousel() {
     for (const [index, file] of imageFiles.entries()) {
         const slide = document.createElement('div');
         slide.className = 'carousel-slide';
+        slide.style.position = 'relative';
 
         const img = document.createElement('img');
         img.src = file.download_url;
@@ -196,22 +196,28 @@ async function displayCarousel() {
             },
         });
 
+        const caption = document.createElement('div');
+        caption.style.position = 'absolute';
+        caption.style.top = '10px';
+        caption.style.left = '50%';
+        caption.style.transform = 'translateX(-50%)';
+        caption.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+        caption.style.color = '#fff';
+        caption.style.padding = '5px 10px';
+        caption.style.borderRadius = '5px';
+        caption.style.fontSize = '14px';
+        caption.style.textAlign = 'center';
+
         if (metadataResponse.ok) {
             const metadataFile = await metadataResponse.json();
             const metadata = JSON.parse(atob(metadataFile.content));
-            if (index === 0) {
-                metadataDisplay.textContent = `State: ${metadata.state}, Date: ${metadata.date}`;
-            }
-
-            slide.dataset.state = metadata.state;
-            slide.dataset.date = metadata.date;
+            caption.textContent = `State: ${metadata.state}, Date: ${metadata.date}`;
         } else {
-            if (index === 0) {
-                metadataDisplay.textContent = 'Metadata not available';
-            }
+            caption.textContent = 'Metadata not available';
         }
 
         slide.appendChild(img);
+        slide.appendChild(caption);
         carouselTrack.appendChild(slide);
 
         const indicator = document.createElement('div');
@@ -229,12 +235,6 @@ async function displayCarousel() {
         carouselTrack.style.transform = `translateX(-${slideWidth * index}px)`;
         indicators.forEach(ind => ind.classList.remove('active'));
         indicators[index].classList.add('active');
-
-        const activeSlide = slides[index];
-        const state = activeSlide.dataset.state;
-        const date = activeSlide.dataset.date;
-        metadataDisplay.textContent = `State: ${state || 'Unknown'}, Date: ${date || 'Unknown'}`;
-
         currentIndex = index;
     }
 
