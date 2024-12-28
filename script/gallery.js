@@ -1,8 +1,3 @@
-// Import states and provinces data from states.js
-// Example formatting in states.js:
-// const statesByCountry = {
-//   '🇺🇸 United States 🇺🇸': [
-//     { name: "Alabama", image: "assets/plates/alabama.png" },
 
 // Hardcoded GitHub credentials and repo details
 const GITHUB_TOKEN = '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';
@@ -54,7 +49,7 @@ async function uploadToGitHub(file, stateName) {
     const filePath = `assets/gallery/${file.name}`;
     const base64Content = await fileToBase64(file);
 
-    const url = `https://api.github.com/repos/${USERNAME}/${REPO_NAME}/contents/${filePath}`;
+    const url = `https://api.github.com/repos/${USERNAME}/${REPO_NAME}/${filePath}`;
     const response = await fetch(url, {
         method: 'PUT',
         headers: {
@@ -145,3 +140,4 @@ async function initializeGallery() {
 }
 
 document.addEventListener('DOMContentLoaded', initializeGallery);
+
