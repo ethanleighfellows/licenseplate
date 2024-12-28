@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Page Not Found</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            background-color: #121212;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+
+        .gif-container {
+            max-width: 400px;
+            margin: 0 auto 20px auto;
+        }
+
+        .gif-container img {
+            width: 100%;
+            border-radius: 10px;
+        }
+
+        a {
+            color: #ffffff;
+            text-decoration: none;
+            padding: 10px 20px;
+            border: 2px solid #ffffff;
+            border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        a:hover {
+            background-color: #ffffff;
+            color: #121212;
+        }
+
+        #particles-js {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+</head>
+<body>
+    <div id="particles-js"></div>
+    <div>
+        <h1>What the frick?! How'd u get here?</h1>
+        <div class="gif-container">
+            <img src="assets/other/status-report-status-update.gif" alt="Kowalski, Status Report">
+        </div>
+        <p>It seems you're lost, Private. Let's get you back on track.</p>
+        <a href="/">Return to Safety</a>
+    </div>
+    <script>
+        particlesJS.load('particles-js', 'particles-config.json', function() {
+            console.log('particles.js loaded');
+        });
+    </script>
+</body>
+</html>
