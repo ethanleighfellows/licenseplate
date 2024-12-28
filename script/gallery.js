@@ -197,19 +197,12 @@ async function displayCarousel() {
     });
 
     if (!response.ok) {
-        console.error("Error fetching images:", await response.text());
-        alert("Failed to fetch images. Please check your repository and API credentials.");
+        console.error('Error fetching images:', await response.text());
         return;
     }
 
     const files = await response.json();
     const imageFiles = files.filter(file => file.type === 'file' && file.name.match(/\.(png|jpe?g|gif)$/i));
-
-    if (imageFiles.length === 0) {
-        console.warn("No images found in the repository.");
-        carouselTrack.innerHTML = '<p style="text-align:center; color:#fff;">No images available. Please upload some to get started!</p>';
-        return;
-    }
 
     let currentIndex = 0;
 
@@ -247,7 +240,7 @@ async function displayCarousel() {
         if (metadataResponse.ok) {
             const metadataFile = await metadataResponse.json();
             const metadata = JSON.parse(atob(metadataFile.content));
-            caption.textContent = `${metadata.state}, Date: ${metadata.date}`;
+            caption.textContent = `State: ${metadata.state}, Date: ${metadata.date}`;
         } else {
             caption.textContent = 'Metadata not available';
         }
