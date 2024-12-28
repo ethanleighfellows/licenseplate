@@ -89,8 +89,12 @@ async function uploadToGitHub(file, stateName, dateCaptured, diplomaticInfo) {
     const token = await getGithubToken();
     if (!token) return;
 
-    const finalState = stateName === 'Diplomatic Plate' && diplomaticInfo ? `Diplomatic Plate: ${diplomaticInfo}` : stateName;
+    // Construct the final state value
+    const finalState = stateName === 'Diplomatic Plate' && diplomaticInfo
+        ? `Diplomatic Plate: ${diplomaticInfo}`
+        : stateName;
 
+    // Build the metadata object
     const metadata = {
         state: finalState,
         date: dateCaptured
@@ -100,6 +104,7 @@ async function uploadToGitHub(file, stateName, dateCaptured, diplomaticInfo) {
     const filePath = `assets/gallery/${file.name}`;
     const base64Content = await fileToBase64(file);
 
+    // Upload the image file
     const url = `https://api.github.com/repos/${USERNAME}/${REPO_NAME}/contents/${filePath}`;
     const response = await fetch(url, {
         method: 'PUT',
@@ -121,6 +126,7 @@ async function uploadToGitHub(file, stateName, dateCaptured, diplomaticInfo) {
         return;
     }
 
+    // Upload the metadata
     const metadataPath = `assets/gallery/meta/${file.name}.meta.json`;
     await fetch(`https://api.github.com/repos/${USERNAME}/${REPO_NAME}/contents/${metadataPath}`, {
         method: 'PUT',
@@ -151,6 +157,7 @@ async function handleImageUpload(event) {
     event.preventDefault();
     const imageInput = document.getElementById('imageInput');
     const stateSelector = document.getElementById('stateSelector');
+    const diplomaticInput = document.getElementById('diplomaticInput');
     const dateCaptured = new Date().toLocaleDateString('en-US', {
         month: 'long',
         day: 'numeric',
@@ -159,6 +166,7 @@ async function handleImageUpload(event) {
 
     const file = imageInput.files[0];
     const stateName = stateSelector.value;
+    const diplomaticInfo = diplomaticInput && diplomaticInput.style.display === 'block' ? diplomaticInput.value : null;
 
     if (!file) {
         alert('Please select an image.');
@@ -170,9 +178,10 @@ async function handleImageUpload(event) {
         return;
     }
 
-    await uploadToGitHub(file, stateName, dateCaptured);
+    await uploadToGitHub(file, stateName, dateCaptured, diplomaticInfo);
     displayCarousel(); // Refresh gallery after upload
 }
+
 
 async function displayCarousel() {
     const carouselTrack = document.querySelector('.carousel-track');
