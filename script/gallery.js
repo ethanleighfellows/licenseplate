@@ -96,8 +96,8 @@ async function uploadToGitHub(file, stateName, dateCaptured) {
         return;
     }
 
-    // Upload metadata
-    const metadataPath = `assets/gallery/${file.name}.meta.json`;
+    // Upload metadata to a separate folder
+    const metadataPath = `assets/gallery/meta/${file.name}.meta.json`;
     await fetch(`https://api.github.com/repos/${USERNAME}/${REPO_NAME}/contents/${metadataPath}`, {
         method: 'PUT',
         headers: {
@@ -128,7 +128,11 @@ async function handleImageUpload(event) {
     event.preventDefault();
     const imageInput = document.getElementById('imageInput');
     const stateSelector = document.getElementById('stateSelector');
-    const dateCaptured = new Date().toLocaleDateString();
+    const dateCaptured = new Date().toLocaleDateString('en-US', {
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric'
+    });
 
     const file = imageInput.files[0];
     const stateName = stateSelector.value;
@@ -170,18 +174,16 @@ async function displayImages() {
     const files = await response.json();
     const imageFiles = files.filter(file => file.type === 'file' && file.name.match(/\.(png|jpe?g|gif)$/i));
 
-    const carousel = document.createElement('div');
-    carousel.className = 'carousel';
-
     imageFiles.forEach(file => {
         const imgContainer = document.createElement('div');
-        imgContainer.className = 'carousel-item';
+        imgContainer.className = 'image-container';
 
         const img = document.createElement('img');
         img.src = file.download_url;
         img.alt = file.name;
+        img.classList.add('clickable-image');
 
-        const metadataPath = `assets/gallery/${file.name}.meta.json`;
+        const metadataPath = `assets/gallery/meta/${file.name}.meta.json`;
 
         fetch(`https://api.github.com/repos/${USERNAME}/${REPO_NAME}/contents/${metadataPath}`, {
             headers: {
@@ -200,37 +202,38 @@ async function displayImages() {
         });
 
         imgContainer.appendChild(img);
-        carousel.appendChild(imgContainer);
+        gallery.appendChild(imgContainer);
+
+        img.addEventListener('click', () => openFullscreen(img.src));
     });
-
-    gallery.appendChild(carousel);
-
-    // Initialize carousel functionality
-    initializeCarousel();
 }
 
-function initializeCarousel() {
-    const carousel = document.querySelector('.carousel');
-    let currentIndex = 0;
+function openFullscreen(imageSrc) {
+    const overlay = document.createElement('div');
+    overlay.id = 'fullscreen-overlay';
+    overlay.style.position = 'fixed';
+    overlay.style.top = '0';
+    overlay.style.left = '0';
+    overlay.style.width = '100%';
+    overlay.style.height = '100%';
+    overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+    overlay.style.display = 'flex';
+    overlay.style.justifyContent = 'center';
+    overlay.style.alignItems = 'center';
+    overlay.style.zIndex = '1000';
 
-    function showSlide(index) {
-        const items = document.querySelectorAll('.carousel-item');
-        items.forEach((item, i) => {
-            item.style.display = i === index ? 'block' : 'none';
-        });
-    }
+    const img = document.createElement('img');
+    img.src = imageSrc;
+    img.style.maxWidth = '90%';
+    img.style.maxHeight = '90%';
+    img.style.border = '5px solid white';
+    overlay.appendChild(img);
 
-    showSlide(currentIndex);
-
-    document.addEventListener('keydown', event => {
-        const items = document.querySelectorAll('.carousel-item');
-        if (event.key === 'ArrowRight') {
-            currentIndex = (currentIndex + 1) % items.length;
-        } else if (event.key === 'ArrowLeft') {
-            currentIndex = (currentIndex - 1 + items.length) % items.length;
-        }
-        showSlide(currentIndex);
+    overlay.addEventListener('click', () => {
+        document.body.removeChild(overlay);
     });
+
+    document.body.appendChild(overlay);
 }
 
 // Initialize the gallery
