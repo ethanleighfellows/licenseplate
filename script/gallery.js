@@ -89,10 +89,7 @@ async function uploadToGitHub(file, stateName, dateCaptured, diplomaticInfo) {
     const token = await getGithubToken();
     if (!token) return;
 
-    // Correctly set the state when Diplomatic Plate is selected
-    const finalState = stateName === 'Diplomatic Plate' && diplomaticInfo
-        ? `Diplomatic Plate: ${diplomaticInfo}`
-        : stateName;
+    const finalState = stateName === 'Diplomatic Plate' && diplomaticInfo ? `Diplomatic Plate: ${diplomaticInfo}` : stateName;
 
     const metadata = {
         state: finalState,
@@ -187,10 +184,7 @@ async function displayCarousel() {
     indicatorsContainer.innerHTML = '';
 
     const token = await getGithubToken();
-    if (!token) {
-        console.error("GitHub token is missing.");
-        return;
-    }
+    if (!token) return;
 
     const url = `https://api.github.com/repos/${USERNAME}/${REPO_NAME}/contents/assets/gallery`;
     const response = await fetch(url, {
@@ -198,107 +192,6 @@ async function displayCarousel() {
             'Authorization': `Bearer ${token}`,
         },
     });
-
-    if (!response.ok) {
-        console.error("Error fetching images:", await response.text());
-        alert("Failed to fetch images. Check repository and API credentials.");
-        return;
-    }
-
-    const files = await response.json();
-    console.log("Fetched files:", files); // Debugging log
-    const imageFiles = files.filter(file => file.type === 'file' && file.name.match(/\.(png|jpe?g|gif)$/i));
-
-    if (imageFiles.length === 0) {
-        console.warn("No images found in the repository.");
-        carouselTrack.innerHTML = '<p style="text-align:center; color:#fff;">No images available. Please upload some to get started!</p>';
-        return;
-    }
-
-    let currentIndex = 0;
-
-    for (const [index, file] of imageFiles.entries()) {
-        const slide = document.createElement('div');
-        slide.className = 'carousel-slide';
-        slide.style.position = 'relative';
-
-        const img = document.createElement('img');
-        img.src = file.download_url;
-        img.alt = file.name;
-        img.style.maxWidth = '80%';
-        img.style.margin = 'auto';
-        img.style.display = 'block';
-
-        const metadataPath = `assets/gallery/meta/${file.name}.meta.json`;
-        const metadataResponse = await fetch(`https://api.github.com/repos/${USERNAME}/${REPO_NAME}/contents/${metadataPath}`, {
-            headers: {
-                'Authorization': `Bearer ${token}`,
-            },
-        });
-
-        const caption = document.createElement('div');
-        caption.style.position = 'absolute';
-        caption.style.top = '10px';
-        caption.style.left = '50%';
-        caption.style.transform = 'translateX(-50%)';
-        caption.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
-        caption.style.color = '#fff';
-        caption.style.padding = '5px 10px';
-        caption.style.borderRadius = '5px';
-        caption.style.fontSize = '14px';
-        caption.style.textAlign = 'center';
-
-        if (metadataResponse.ok) {
-            const metadataFile = await metadataResponse.json();
-            const metadata = JSON.parse(atob(metadataFile.content));
-            console.log("Fetched metadata for", file.name, ":", metadata); // Debugging log
-            caption.textContent = `${metadata.state}, Date: ${metadata.date}`;
-        } else {
-            console.warn("Metadata not found for", file.name);
-            caption.textContent = 'Metadata not available';
-        }
-
-        slide.appendChild(img);
-        slide.appendChild(caption);
-        carouselTrack.appendChild(slide);
-
-        const indicator = document.createElement('div');
-        indicator.className = 'carousel-indicator';
-        if (index === 0) indicator.classList.add('active');
-        indicator.dataset.index = index;
-        indicatorsContainer.appendChild(indicator);
-    }
-
-    const slides = Array.from(carouselTrack.children);
-    const indicators = Array.from(indicatorsContainer.children);
-
-    function updateCarousel(index) {
-        const slideWidth = slides[0].getBoundingClientRect().width;
-        carouselTrack.style.transform = `translateX(-${slideWidth * index}px)`;
-        indicators.forEach(ind => ind.classList.remove('active'));
-        indicators[index].classList.add('active');
-        currentIndex = index;
-    }
-
-    prevButton.addEventListener('click', () => {
-        const nextIndex = (currentIndex === 0) ? slides.length - 1 : currentIndex - 1;
-        updateCarousel(nextIndex);
-    });
-
-    nextButton.addEventListener('click', () => {
-        const nextIndex = (currentIndex === slides.length - 1) ? 0 : currentIndex + 1;
-        updateCarousel(nextIndex);
-    });
-
-    indicatorsContainer.addEventListener('click', (e) => {
-        if (e.target.classList.contains('carousel-indicator')) {
-            updateCarousel(Number(e.target.dataset.index));
-        }
-    });
-
-    updateCarousel(currentIndex);
-}
-
 
     if (!response.ok) {
         console.error('Error fetching images:', await response.text());
