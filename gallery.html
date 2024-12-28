@@ -57,12 +57,26 @@
         z-index: 1001;
     }
 
-        #filterContainer {
-    display: block;
+      #filterContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
     padding: 10px;
-    background-color: #f9f9f9;
+    background-color: #f0f0f0;
     border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 20px;
 }
+
+#filterContainer label {
+    font-size: 14px;
+    margin-left: 5px;
+}
+
+#filterContainer input[type="checkbox"] {
+    margin-right: 5px;
+}
+
  
         h1 {
             margin-bottom: 20px;
