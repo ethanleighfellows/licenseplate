@@ -89,12 +89,12 @@ async function uploadToGitHub(file, stateName, dateCaptured, diplomaticInfo) {
     const token = await getGithubToken();
     if (!token) return;
 
-    // Construct the final state value
+    // Construct the final state value based on diplomatic info
     const finalState = stateName === 'Diplomatic Plate' && diplomaticInfo
         ? `Diplomatic Plate: ${diplomaticInfo}`
         : stateName;
 
-    // Build the metadata object
+    // Build the metadata object with the correct state value
     const metadata = {
         state: finalState,
         date: dateCaptured
@@ -126,9 +126,9 @@ async function uploadToGitHub(file, stateName, dateCaptured, diplomaticInfo) {
         return;
     }
 
-    // Upload the metadata
+    // Upload the metadata file
     const metadataPath = `assets/gallery/meta/${file.name}.meta.json`;
-    await fetch(`https://api.github.com/repos/${USERNAME}/${REPO_NAME}/contents/${metadataPath}`, {
+    const metadataResponse = await fetch(`https://api.github.com/repos/${USERNAME}/${REPO_NAME}/contents/${metadataPath}`, {
         method: 'PUT',
         headers: {
             'Authorization': `Bearer ${token}`,
@@ -141,8 +141,15 @@ async function uploadToGitHub(file, stateName, dateCaptured, diplomaticInfo) {
         }),
     });
 
+    if (!metadataResponse.ok) {
+        console.error('Error uploading metadata:', await metadataResponse.text());
+        alert(`Failed to upload metadata for ${file.name}.`);
+        return;
+    }
+
     alert(`Successfully uploaded ${file.name} with metadata.`);
 }
+
 
 function fileToBase64(file) {
     return new Promise((resolve, reject) => {
@@ -157,7 +164,7 @@ async function handleImageUpload(event) {
     event.preventDefault();
     const imageInput = document.getElementById('imageInput');
     const stateSelector = document.getElementById('stateSelector');
-    const diplomaticInput = document.getElementById('diplomaticInput');
+    const diplomaticInput = document.getElementById('diplomaticInput'); // Get the diplomatic input field
     const dateCaptured = new Date().toLocaleDateString('en-US', {
         month: 'long',
         day: 'numeric',
@@ -166,7 +173,7 @@ async function handleImageUpload(event) {
 
     const file = imageInput.files[0];
     const stateName = stateSelector.value;
-    const diplomaticInfo = diplomaticInput && diplomaticInput.style.display === 'block' ? diplomaticInput.value : null;
+    const diplomaticInfo = diplomaticInput && diplomaticInput.style.display === 'block' ? diplomaticInput.value.trim() : null;
 
     if (!file) {
         alert('Please select an image.');
@@ -181,7 +188,6 @@ async function handleImageUpload(event) {
     await uploadToGitHub(file, stateName, dateCaptured, diplomaticInfo);
     displayCarousel(); // Refresh gallery after upload
 }
-
 
 async function displayCarousel() {
     const carouselTrack = document.querySelector('.carousel-track');
