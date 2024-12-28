@@ -150,11 +150,13 @@ async function handleImageUpload(event) {
 async function displayCarousel() {
     const carouselTrack = document.querySelector('.carousel-track');
     const indicatorsContainer = document.querySelector('.carousel-indicators');
+    const metadataDisplay = document.querySelector('.metadata-display');
     const prevButton = document.querySelector('.carousel-arrow.prev');
     const nextButton = document.querySelector('.carousel-arrow.next');
 
     carouselTrack.innerHTML = '';
     indicatorsContainer.innerHTML = '';
+    metadataDisplay.textContent = '';
 
     const token = await getGithubToken();
     if (!token) return;
@@ -194,21 +196,22 @@ async function displayCarousel() {
             },
         });
 
-        const caption = document.createElement('p');
-        caption.style.textAlign = 'center';
-        caption.style.fontSize = '14px';
-        caption.style.color = '#333';
-
         if (metadataResponse.ok) {
             const metadataFile = await metadataResponse.json();
             const metadata = JSON.parse(atob(metadataFile.content));
-            caption.textContent = `State: ${metadata.state}, Date: ${metadata.date}`;
+            if (index === 0) {
+                metadataDisplay.textContent = `State: ${metadata.state}, Date: ${metadata.date}`;
+            }
+
+            slide.dataset.state = metadata.state;
+            slide.dataset.date = metadata.date;
         } else {
-            caption.textContent = 'Metadata not available';
+            if (index === 0) {
+                metadataDisplay.textContent = 'Metadata not available';
+            }
         }
 
         slide.appendChild(img);
-        slide.appendChild(caption);
         carouselTrack.appendChild(slide);
 
         const indicator = document.createElement('div');
@@ -226,6 +229,12 @@ async function displayCarousel() {
         carouselTrack.style.transform = `translateX(-${slideWidth * index}px)`;
         indicators.forEach(ind => ind.classList.remove('active'));
         indicators[index].classList.add('active');
+
+        const activeSlide = slides[index];
+        const state = activeSlide.dataset.state;
+        const date = activeSlide.dataset.date;
+        metadataDisplay.textContent = `State: ${state || 'Unknown'}, Date: ${date || 'Unknown'}`;
+
         currentIndex = index;
     }
 
