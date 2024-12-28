@@ -4,9 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Image Gallery</title>
-     <link rel="stylesheet" href="style.css">
-    <script src="script/gallery.js"></script>
+    <link rel="stylesheet" href="style.css">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
         .upload-form {
             margin: 20px 0;
             display: flex;
@@ -20,16 +33,80 @@
             width: 80%;
             max-width: 400px;
         }
-        .gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 10px;
-            padding: 10px;
+
+        .carousel-container {
+            position: relative;
+            width: 90%;
+            max-width: 800px;
+            overflow: hidden;
+            margin: 20px auto;
         }
-        .gallery img {
+
+        .carousel-track {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .carousel-slide {
+            min-width: 100%;
+        }
+
+        .carousel-slide img {
             width: 100%;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            height: auto;
+        }
+
+        .carousel-arrows {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+        }
+
+        .carousel-arrow {
+            background-color: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-size: 1.5rem;
+        }
+
+        .carousel-indicators {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 5px;
+        }
+
+        .carousel-indicator {
+            width: 10px;
+            height: 10px;
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .carousel-indicator.active {
+            background-color: #fff;
+        }
+
+        @media (max-width: 600px) {
+            .carousel-arrow {
+                width: 30px;
+                height: 30px;
+                font-size: 1.2rem;
+            }
         }
     </style>
 </head>
@@ -46,11 +123,18 @@
             <button type="submit">Upload</button>
         </form>
 
-        <div class="gallery" id="gallery">
-            <!-- Images dynamically loaded here -->
+        <div class="carousel-container" id="carousel">
+            <div class="carousel-track">
+                <!-- Images dynamically loaded here -->
+            </div>
+            <div class="carousel-arrows">
+                <button class="carousel-arrow prev">&#10094;</button>
+                <button class="carousel-arrow next">&#10095;</button>
+            </div>
+            <div class="carousel-indicators"></div>
         </div>
     </div>
 
-    <script src="script/particles.js"></script>
+    <script src="script/gallery.js"></script>
 </body>
 </html>
