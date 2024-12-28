@@ -1,1 +1,31 @@
+name: Upload Gallery Images
+
+on:
+  push:
+    paths:
+      - uploads/**  # Trigger the workflow when any file is added or modified in the `uploads` folder
+
+jobs:
+  upload-images:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Step 2: Move images to the `assets/gallery` folder
+      - name: Move images to gallery
+        run: |
+          mkdir -p assets/gallery
+          mv uploads/* assets/gallery/ || echo "No new files to move."
+
+      # Step 3: Commit and push changes
+      - name: Commit and push changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add assets/gallery/*
+          git commit -m "Move new images to gallery [skip ci]" || echo "No changes to commit."
+          git push
 
