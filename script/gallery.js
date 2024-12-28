@@ -326,6 +326,158 @@ async function displayCarousel() {
     updateCarousel(currentIndex);
 }
 
+async function displayFilterOptions() {
+    const filterContainer = document.getElementById('filterContainer');
+    filterContainer.innerHTML = ''; // Clear existing filters
+
+    const token = await getGithubToken();
+    if (!token) return;
+
+    const url = `https://api.github.com/repos/${USERNAME}/${REPO_NAME}/contents/assets/gallery/meta`;
+    const response = await fetch(url, {
+        headers: {
+            'Authorization': `Bearer ${token}`,
+        },
+    });
+
+    if (!response.ok) {
+        console.error('Error fetching metadata:', await response.text());
+        return;
+    }
+
+    const files = await response.json();
+    const metadataFiles = files.filter(file => file.type === 'file' && file.name.endsWith('.meta.json'));
+
+    // Extract unique states
+    const statesSet = new Set();
+    for (const file of metadataFiles) {
+        const metadataResponse = await fetch(file.download_url, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        });
+
+        if (metadataResponse.ok) {
+            const metadata = await metadataResponse.json();
+            statesSet.add(metadata.state);
+        }
+    }
+
+    const states = Array.from(statesSet).sort();
+
+    // Create "Select All" checkbox
+    const selectAllCheckbox = document.createElement('input');
+    selectAllCheckbox.type = 'checkbox';
+    selectAllCheckbox.id = 'selectAll';
+    selectAllCheckbox.checked = true;
+    selectAllCheckbox.addEventListener('change', () => {
+        const checkboxes = document.querySelectorAll('.state-checkbox');
+        checkboxes.forEach(cb => (cb.checked = selectAllCheckbox.checked));
+        filterGallery();
+    });
+
+    const selectAllLabel = document.createElement('label');
+    selectAllLabel.htmlFor = 'selectAll';
+    selectAllLabel.textContent = 'Select All';
+
+    filterContainer.appendChild(selectAllCheckbox);
+    filterContainer.appendChild(selectAllLabel);
+    filterContainer.appendChild(document.createElement('br'));
+
+    // Create checkboxes for each state
+    states.forEach(state => {
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.className = 'state-checkbox';
+        checkbox.value = state;
+        checkbox.checked = true;
+        checkbox.addEventListener('change', filterGallery);
+
+        const label = document.createElement('label');
+        label.textContent = state;
+        label.style.marginLeft = '5px';
+
+        filterContainer.appendChild(checkbox);
+        filterContainer.appendChild(label);
+        filterContainer.appendChild(document.createElement('br'));
+    });
+}
+
+async function filterGallery() {
+    const selectedStates = Array.from(document.querySelectorAll('.state-checkbox:checked')).map(cb => cb.value);
+    const carouselTrack = document.querySelector('.carousel-track');
+    carouselTrack.innerHTML = ''; // Clear gallery
+
+    const token = await getGithubToken();
+    if (!token) return;
+
+    const url = `https://api.github.com/repos/${USERNAME}/${REPO_NAME}/contents/assets/gallery/meta`;
+    const response = await fetch(url, {
+        headers: {
+            'Authorization': `Bearer ${token}`,
+        },
+    });
+
+    if (!response.ok) {
+        console.error('Error fetching metadata:', await response.text());
+        return;
+    }
+
+    const files = await response.json();
+    const metadataFiles = files.filter(file => file.type === 'file' && file.name.endsWith('.meta.json'));
+
+    for (const file of metadataFiles) {
+        const metadataResponse = await fetch(file.download_url, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        });
+
+        if (metadataResponse.ok) {
+            const metadata = await metadataResponse.json();
+            if (selectedStates.includes(metadata.state)) {
+                // Add the image to the gallery
+                const imagePath = file.download_url.replace('.meta.json', ''); // Derive image URL
+                const img = document.createElement('img');
+                img.src = imagePath;
+                img.alt = metadata.state;
+                img.style.maxWidth = '80%';
+                img.style.margin = 'auto';
+                img.style.display = 'block';
+
+                const slide = document.createElement('div');
+                slide.className = 'carousel-slide';
+                slide.style.position = 'relative';
+                slide.appendChild(img);
+
+                const caption = document.createElement('div');
+                caption.style.position = 'absolute';
+                caption.style.top = '10px';
+                caption.style.left = '50%';
+                caption.style.transform = 'translateX(-50%)';
+                caption.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+                caption.style.color = '#fff';
+                caption.style.padding = '5px 10px';
+                caption.style.borderRadius = '5px';
+                caption.style.fontSize = '14px';
+                caption.style.textAlign = 'center';
+                caption.textContent = `State: ${metadata.state}, Date: ${metadata.date}`;
+
+                slide.appendChild(caption);
+                carouselTrack.appendChild(slide);
+            }
+        }
+    }
+}
+
+async function initializeGallery() {
+    await populateStateSelector();
+    await displayFilterOptions(); // Display filtering options
+    document.getElementById('uploadForm').addEventListener('submit', handleImageUpload);
+    filterGallery(); // Initialize gallery display
+}
+
+
 async function initializeGallery() {
     await populateStateSelector();
 
