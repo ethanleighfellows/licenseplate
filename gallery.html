@@ -14,8 +14,15 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100vh;
+            min-height: 100vh;
             margin: 0;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            font-size: 2rem;
+            color: #ffffff;
+            text-align: center;
         }
 
         .upload-form {
@@ -156,6 +163,8 @@
     </style>
 </head>
 <body>
+    <h1>Image Gallery</h1>
+
     <div class="container">
         <form class="upload-form" id="uploadForm">
             <input type="file" id="imageInput" accept="image/*" required />
