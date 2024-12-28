@@ -21,6 +21,34 @@ async function getGithubToken() {
     }
 }
 
+
+document.addEventListener('DOMContentLoaded', () => {
+    const overlay = document.getElementById('fullscreenOverlay');
+    const fullscreenImage = document.getElementById('fullscreenImage');
+    const closeButton = document.getElementById('fullscreenClose');
+
+    // Open full-screen view
+    document.body.addEventListener('click', (event) => {
+        if (event.target.tagName === 'IMG' && event.target.closest('.carousel-slide')) {
+            fullscreenImage.src = event.target.src;
+            overlay.style.display = 'flex';
+        }
+    });
+
+    // Close full-screen view
+    closeButton.addEventListener('click', () => {
+        overlay.style.display = 'none';
+    });
+
+    // Close on overlay click
+    overlay.addEventListener('click', (event) => {
+        if (event.target === overlay) {
+            overlay.style.display = 'none';
+        }
+    });
+});
+
+
 async function fetchStatesByCountry() {
     const response = await fetch('script/states.js');
     const scriptText = await response.text();
