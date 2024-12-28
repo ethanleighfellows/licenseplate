@@ -5,7 +5,7 @@
 //     { name: "Alabama", image: "assets/plates/alabama.png" },
 
 // Hardcoded GitHub credentials and repo details
-const GITHUB_TOKEN = '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';
+const GITHUB_TOKEN = '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';
 const REPO_NAME = 'licenseplate';
 const USERNAME = 'ethanleighfellows';
 const BRANCH = 'main';
