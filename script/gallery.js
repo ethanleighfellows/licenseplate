@@ -187,7 +187,10 @@ async function displayCarousel() {
     indicatorsContainer.innerHTML = '';
 
     const token = await getGithubToken();
-    if (!token) return;
+    if (!token) {
+        console.error("GitHub token is missing.");
+        return;
+    }
 
     const url = `https://api.github.com/repos/${USERNAME}/${REPO_NAME}/contents/assets/gallery`;
     const response = await fetch(url, {
@@ -197,12 +200,20 @@ async function displayCarousel() {
     });
 
     if (!response.ok) {
-        console.error('Error fetching images:', await response.text());
+        console.error("Error fetching images:", await response.text());
+        alert("Failed to fetch images. Check repository and API credentials.");
         return;
     }
 
     const files = await response.json();
+    console.log("Fetched files:", files); // Debugging log
     const imageFiles = files.filter(file => file.type === 'file' && file.name.match(/\.(png|jpe?g|gif)$/i));
+
+    if (imageFiles.length === 0) {
+        console.warn("No images found in the repository.");
+        carouselTrack.innerHTML = '<p style="text-align:center; color:#fff;">No images available. Please upload some to get started!</p>';
+        return;
+    }
 
     let currentIndex = 0;
 
@@ -240,8 +251,10 @@ async function displayCarousel() {
         if (metadataResponse.ok) {
             const metadataFile = await metadataResponse.json();
             const metadata = JSON.parse(atob(metadataFile.content));
-            caption.textContent = `State: ${metadata.state}, Date: ${metadata.date}`;
+            console.log("Fetched metadata for", file.name, ":", metadata); // Debugging log
+            caption.textContent = `${metadata.state}, Date: ${metadata.date}`;
         } else {
+            console.warn("Metadata not found for", file.name);
             caption.textContent = 'Metadata not available';
         }
 
