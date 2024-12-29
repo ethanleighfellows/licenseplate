@@ -80,6 +80,18 @@ function processAirtableData(records) {
 
     displayLeaderboard(stateCounts);
     updateProgressBars(usStatesSeen.size, canadaProvincesSeen.size, mexicoProvincesSeen.size);
+    displayCumulativeTotal(stateCounts);
+}
+
+function displayCumulativeTotal(stateCounts) {
+    const cumulativeTotal = Object.values(stateCounts).reduce((total, count) => total + count, 0);
+    const totalDisplay = document.getElementById('cumulative-total');
+
+    if (totalDisplay) {
+        totalDisplay.textContent = `Cumulative Total: ${cumulativeTotal}`;
+    } else {
+        console.error("Cumulative total element not found!");
+    }
 }
 
 function updateProgressBars(usCount, canadaCount, mexicoCount) {
@@ -139,6 +151,5 @@ function displayLeaderboard(stateCounts) {
         console.error("Leaderboard element not found!");
     }
 }
-
 
 document.addEventListener('DOMContentLoaded', fetchAirtableData);
