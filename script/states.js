@@ -15,6 +15,7 @@ const statesByCountry = {
     { name: "Colorado", image: "assets/plates/colorado.png" },
     { name: "Connecticut", image: "assets/plates/connecticut.png" },
     { name: "Delaware", image: "assets/plates/delaware.png" },
+    { name: "District of Columbia", image: "assets/plates/doc.png" },
     { name: "Florida", image: "assets/plates/florida.png" },
     { name: "Georgia", image: "assets/plates/georgia.png" },
     { name: "Hawaii", image: "assets/plates/hawaii.png" },
