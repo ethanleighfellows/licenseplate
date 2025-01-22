@@ -17,7 +17,7 @@ async function fetchAirtableData() {
 
 // Manually Defined Arrays
 const usStates = [
-    "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut",
+    "Alabama", "Alaska", "Arizona", "Arkansas", "California (Outside)", "Colorado", "Connecticut",
     "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa",
     "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan",
     "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire",
@@ -29,7 +29,7 @@ const usStates = [
 
 const canadaProvinces = [
     "Alberta", "British Columbia", "Manitoba", "New Brunswick",
-    "Newfoundland and Labrador", "Nova Scotia", "Ontario",
+    "Newfoundland and Labrador", "Nova Scotia", "Ontario (Outside)",
     "Prince Edward Island", "Quebec", "Saskatchewan",
     "Northwest Territories", "Nunavut", "Yukon"
 ];
