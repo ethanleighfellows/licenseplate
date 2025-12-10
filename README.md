@@ -20,3 +20,5 @@ the france diplomatic plate also seen in san francisco on 16th and church
 and an alaska plate with the custom plate: vry nce
 
 bcuz some of these are before i wrote the app, i haven't added them fyi
+
+Finished US November 2025. Saw a west virgina plate which eluded me for 8 months on a van which looked like it was being driven by a 12 year old. 
