@@ -1,4 +1,4 @@
-const GOOGLE_DOC_URL = 'https://docs.google.com/document/d/1-qG2JoPtLwe04661yKhnlZo0-d3MMSgHBEY-waE3qzE/export?format=txt';
+const GOOGLE_DOC_URL = 'depreciated';
 const REPO_NAME = 'licenseplate';
 const USERNAME = 'ethanleighfellows';
 const BRANCH = 'main';
