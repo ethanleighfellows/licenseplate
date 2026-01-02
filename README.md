@@ -11,8 +11,8 @@ The project started on **October 28, 2024**, while on academic exchange at **Que
 * 🗺️ **Interactive Map** – Visualize license plate counts by region (US, Canada, Mexico)
 * 📊 **Data Visualization** – Charts showing distribution of plates across states/provinces
 * 📝 **Real-time Counting** – Record plates as observed, with automatic updates
-* 🔄 **Dynamic Filters** – Filter by country, state/province, or plate type
-* 💾 **Local Storage** – All data stored client-side
+* 🔄 **Dynamic Search** – Search by state/province
+* 💾 **Storage** – All data stored in Airtable or Github itself
 * 🎯 **Full North American Coverage** – Includes US states, Canadian provinces, and Mexican states
 
 ---
