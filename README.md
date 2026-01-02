@@ -2,7 +2,7 @@
 
 **Licenseplate** is a North American license plate tracker and visualization tool. It allows a user to **record, count, and visualize vehicle license plates** by **state, or province, with CA, US and MX coverage** providing interactive maps and dynamic charts.
 
-The project started on **October 28, 2024**, while on academic exchange at **Queen’s University in Ontario**, and continued through **November 2025** in the United States. Data collection spans **Canada, the United States, and Mexico**. The tracker was created to gamify vehicle observation, capturing patterns and rare plates over time.
+The project started on **October 28, 2024**, while on academic exchange at **Queen’s University in Ontario**, and continued through **November 2025** in the United States. Data collection spans cars from **Canada, the United States, and Mexico**. The tracker was created to gamify vehicle observation, capturing patterns and rare plates over time.
 
 ---
 
