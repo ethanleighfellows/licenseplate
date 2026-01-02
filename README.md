@@ -31,9 +31,8 @@ The project started on **October 28, 2024**, while on academic exchange at **Que
 
 ## 📅 Project Timeline
 
-* **Start of Collection:** 10/28/2024, Ontario, Canada
-* **Completion of US Collection:** November 2025
-* **Notable Achievement:** Captured a West Virginia plate that had eluded tracking for 8 months
+* **Start of Collection:** October 2024, Ontario, Canada
+* **Completion of US Collection:** November 2025 -- Captured a West Virginia plate that had eluded tracking for 8 months
 
 ---
 
